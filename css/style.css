@@ -18,9 +18,7 @@ h2, h3, h4, h5, h6 {
 h1{
   font-family: Georgia, serif;
   font-weight: bold;
-  color: white;
-  text-shadow: 2px 2px 4px #000000;
-  letter-spacing: 1px;
+  color: rgb(255, 255, 255);
 
 }
 
