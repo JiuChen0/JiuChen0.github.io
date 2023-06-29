@@ -27,11 +27,11 @@ jQuery(document).ready(function( $ ) {
   if($('#canvas').length) {
 
 		var doughnutData = [{
-        value: 70,
+        value: 60,
         color: "#3bc492"
       },
       {
-        value: 30,
+        value: 40,
         color: "#ecf0f1"
       }
     ];
@@ -40,11 +40,11 @@ jQuery(document).ready(function( $ ) {
 
 	if($('#canvas1').length) {
 		var doughnutData = [{
-				value: 90,
+				value: 70,
 				color: "#3bc492"
 			},
 			{
-				value: 10,
+				value: 50,
 				color: "#ecf0f1"
 			}
 		];
