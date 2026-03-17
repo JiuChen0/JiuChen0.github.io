@@ -11,7 +11,8 @@ I graduated from Washington University in St. Louis with a Master's degree in Co
 
 ## Interests
 
-- Software Development
-- Machine Learning
-- Software Engineering
-- Image Processing
+- Decentralized Machine Learning
+- Large Language Models (LLMs) Inference & Fine-Tuning
+- Distributed Systems
+- Pipeline & Tensor Parallelism
+- Heterogeneous Computing
