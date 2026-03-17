@@ -11,54 +11,34 @@ redirect_from:
 
 Education
 ======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
-* B.S. in GitHub, GitHub University, 2012
+* M.S. in Computer Science, Washington University in St. Louis, August 2024 - May 2026
+* B.S. in Computer Science, Oregon State University, September 2021 - June 2024
+* B.E. in Electronic Information Engineering, Northwest Minzu University, September 2018 - May 2022
 
-Work experience
+Work Experience
 ======
-* Spring 2024: Academic Pages Collaborator
-  * GitHub University
-  * Duties includes: Updates and improvements to template
-  * Supervisor: The Users
+* September 2023 - June 2024: Machine Recognition Developer
+  * Garmin Ltd.
+  * Designed and implemented an Autonomous Navigation System for RoboRacer.
+  * Developed a sophisticated obstacle detection and avoidance system.
 
-* Fall 2015: Research Assistant
-  * GitHub University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
+* June 2021 - July 2021: Summer Internship
+  * China Unicom., Ltd.
+  * Conducted operational tuning of big data models.
+  * Performed vulnerability analysis in information security.
 
-* Summer 2015: Research Assistant
-  * GitHub University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
-  
+* July 2021 - September 2021: Research Assistant
+  * Lanzhou University
+  * Assisted in tagging and categorizing video content.
+  * Studied advanced video summarization algorithms.
+
+* December 2020 - June 2021: Research Assistant
+  * Zhejiang University
+  * Co-developed a model capable of accurately converting local dialect speech into text.
+  * Achieved 97% model accuracy rate in dialect recognition.
+
 Skills
 ======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
-
-Publications
-======
-  <ul>{% for post in site.publications reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Talks
-======
-  <ul>{% for post in site.talks reversed %}
-    {% include archive-single-talk-cv.html  %}
-  {% endfor %}</ul>
-  
-Teaching
-======
-  <ul>{% for post in site.teaching reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Service and leadership
-======
-* Currently signed in to 43 different slack teams
+* **Languages & Databases:** Python, C++, C, MySQL, MongoDB
+* **Frameworks:** Arduino, TensorFlow, PyTorch, OpenCV
+* **Tools:** Git, Linux, VS Code, Jupyter
