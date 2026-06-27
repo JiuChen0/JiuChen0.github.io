@@ -3,7 +3,7 @@
    then merge into an output stream. Subtle motion, accent-color tokens.
 */
 
-const HeroDiagram = ({ playing = true }) => {
+const HeroDiagram = ({ playing = true, language = "en" }) => {
   const W = 720;
   const H = 180;
   const GPU_COUNT = 4;
@@ -16,6 +16,19 @@ const HeroDiagram = ({ playing = true }) => {
   const GPU_GAP = 30;
   const GPU_TOTAL_H = GPU_COUNT * GPU_H + (GPU_COUNT - 1) * GPU_GAP;
   const GPU_Y0 = (H - GPU_TOTAL_H) / 2;
+  const labels = language === "zh"
+    ? {
+        caption: "图 01 · 分布式推理 · 张量并行前向传播",
+        live: "流式传输",
+        prompt: "提示词",
+        logits: "输出",
+      }
+    : {
+        caption: "fig 01 · distributed inference · tensor-parallel forward pass",
+        live: "streaming",
+        prompt: "PROMPT",
+        logits: "LOGITS",
+      };
 
   const gpus = Array.from({ length: GPU_COUNT }, (_, i) => ({
     i,
@@ -46,8 +59,8 @@ const HeroDiagram = ({ playing = true }) => {
   return (
     <div className="hero-anim">
       <div className="hero-anim-head">
-        <span>fig 01 · distributed inference · tensor-parallel forward pass</span>
-        <span className="live">streaming</span>
+        <span>{labels.caption}</span>
+        <span className="live">{labels.live}</span>
       </div>
       <svg
         viewBox={`0 0 ${W} ${H}`}
@@ -84,9 +97,9 @@ const HeroDiagram = ({ playing = true }) => {
 
         {/* Entry & exit labels */}
         <g fontFamily="var(--mono)" fontSize="10" fill="var(--ink-mute)" letterSpacing="0.06em" fontWeight="600">
-          <text x={ENTRY_X} y={MID_Y - 14} textAnchor="middle">PROMPT</text>
+          <text x={ENTRY_X} y={MID_Y - 14} textAnchor="middle">{labels.prompt}</text>
           <text x={ENTRY_X} y={MID_Y + 22} textAnchor="middle" fill="var(--ink-soft)" fontSize="10" fontWeight="500">tok[i]</text>
-          <text x={EXIT_X} y={MID_Y - 14} textAnchor="middle">LOGITS</text>
+          <text x={EXIT_X} y={MID_Y - 14} textAnchor="middle">{labels.logits}</text>
           <text x={EXIT_X} y={MID_Y + 22} textAnchor="middle" fill="var(--ink-soft)" fontSize="10" fontWeight="500">y[i+1]</text>
         </g>
 
