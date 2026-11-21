@@ -6,6 +6,8 @@ const { useState, useEffect, useRef } = React;
 
 // ---------- data ----------
 
+const SEQUOIA_LAB_URL = "https://sequoia-lab.github.io/index.html";
+
 const SECTIONS = [
   { id: "about",        label: "About",        labelZh: "关于我" },
   { id: "research",     label: "Research",     labelZh: "研究方向" },
@@ -82,8 +84,8 @@ const PROJECTS = [
     title: "BloomBee — decentralized LLM fine-tuning & inference",
     titleZh: "BloomBee：去中心化的大模型推理与微调",
     stack: ["Python", "PyTorch", "Hivemind", "P2P"],
-    blurb: "Contributing to BloomBee, a decentralized serving system that splits a model's transformer blocks across peers in a P2P network — letting heterogeneous, idle GPUs collaboratively serve and fine-tune very large models (e.g. LLaMA 3.1 405B) that no single machine could hold. Built on Hivemind and FlexLLMGen, with HuggingFace Transformers integration. My contributions focus on system-level cleanup of the runtime: optimizing shared-memory usage in the offloading path, retiring legacy quantization code, and removing dead modules to keep the codebase lean for new contributors.",
-    blurbZh: "BloomBee 把模型的 Transformer 层分到 P2P 网络的不同节点上，让不同配置的闲置 GPU 一起运行或微调单机装不下的模型，比如 Llama 3.1 405B。项目基于 Hivemind 和 FlexLLMGen，并接入 Hugging Face Transformers。我主要改进了卸载过程中的共享内存管理，也清理了旧的量化代码和无用模块，方便维护和上手。",
+    blurb: "I contributed to BloomBee as a visiting researcher at UC Merced's PASA Lab. BloomBee splits a model's Transformer blocks across peers in a P2P network, so idle GPUs with different capacities can serve and fine-tune models too large for a single machine, such as Llama 3.1 405B. It builds on Hivemind and FlexLLMGen and integrates with Hugging Face Transformers. I improved shared-memory management during offloading and removed legacy quantization code and unused modules.",
+    blurbZh: "我在 UC Merced 的 PASA Lab 做访问研究时参与了 BloomBee。这个项目把模型的 Transformer 层分到 P2P 网络的不同节点上，让不同配置的闲置 GPU 一起运行或微调单机装不下的模型，比如 Llama 3.1 405B。项目基于 Hivemind 和 FlexLLMGen，并接入 Hugging Face Transformers。我主要改进了卸载过程中的共享内存管理，也清理了旧的量化代码和无用模块，方便维护和上手。",
     links: [
       { label: "Repo", labelZh: "代码仓库", href: "https://github.com/ai-decentralized/BloomBee" },
       { label: "PR #34", labelZh: "PR #34", href: "https://github.com/ai-decentralized/BloomBee/pull/34" },
@@ -121,14 +123,14 @@ const PROJECTS = [
 const EXPERIENCE = [
   {
     anim: "research",
-    when: "2025 — Present",
-    whenZh: "2025 年至今",
+    when: "Started in 2025",
+    whenZh: "2025 年开始",
     title: "Visiting Researcher · Distributed LLM Systems",
     titleZh: "访问研究员（大模型分布式推理）",
-    where: "Parallel Architecture, System & Algorithm Lab — UC Merced",
-    whereZh: "加州大学默塞德分校并行架构、系统与算法实验室",
-    blurb: "Working on BloomBee, a decentralized P2P serving system that shards a model's transformer blocks across peers so heterogeneous GPUs can collaboratively run and fine-tune very-large models (e.g. LLaMA 3.1 405B) built on Hivemind and FlexLLMGen. Cleaning up the runtime: optimizing shared-memory usage in the offloading path, retiring legacy quantization, and trimming dead code to keep the system approachable for new contributors.",
-    blurbZh: "参与 BloomBee 的研发，研究怎么让不同配置的 GPU 协作完成超大模型的推理和微调。我的工作主要集中在运行时，包括改进卸载过程中的共享内存管理，以及清理旧代码。",
+    where: "Parallel Architecture, System, and Algorithm (PASA) Lab — UC Merced",
+    whereZh: "加州大学默塞德分校并行架构、系统与算法实验室（PASA Lab）",
+    blurb: "Contributed to BloomBee, a P2P system for running and fine-tuning large models across heterogeneous GPUs. I improved shared-memory management during offloading and removed legacy quantization code and unused modules.",
+    blurbZh: "在访问研究期间参与了 BloomBee 的研发，研究怎么让不同配置的 GPU 一起运行和微调超大模型。我主要改进了卸载过程中的共享内存管理，并清理了旧代码。",
     tag: "Research",
     tagZh: "研究",
   },
@@ -188,8 +190,8 @@ const EDUCATION = [
     whenZh: "2027 年春季",
     degree: "Ph.D. in Computer Software Engineering",
     degreeZh: "计算机软件工程博士",
-    where: "University of California, Merced",
-    whereZh: "加州大学默塞德分校（UC Merced）",
+    where: "University of California, Merced · Sequoia Lab",
+    whereZh: "加州大学默塞德分校（UC Merced） · Sequoia Lab",
     watermark: { kind: "img", src: "assets/uc-merced-logo.png" },
   },
   {
@@ -276,8 +278,8 @@ const COPY = {
       awards: ["Awards", "Honors & recognition."],
       contact: ["Contact", "Reach me."],
     },
-    aboutLead: <>I'm a Ph.D. student in Computer Software Engineering at the <strong>University of California, Merced</strong>. I earned my M.S. in Computer Science from <strong>Washington University in St. Louis</strong>.</>,
-    aboutBody: "At UC Merced's Parallel Architecture, System & Algorithm Lab, I work on BloomBee, a distributed system for large-model inference. I've also started studying QPESIM, a simulator for quantum phase estimation, with a focus on the performance of its parallel implementation.",
+    aboutLead: <>I'm a Ph.D. student in Computer Software Engineering at the <strong>University of California, Merced</strong> and a member of <strong><a href={SEQUOIA_LAB_URL} style={{ textDecoration: "underline" }}>Sequoia Lab</a></strong>. I earned my M.S. in Computer Science from <strong>Washington University in St. Louis</strong>.</>,
+    aboutBody: "I recently started studying parallel performance in QPESIM, a simulator for quantum phase estimation. During an earlier research visit to UC Merced's PASA Lab, I contributed to BloomBee, a distributed system for large-model inference.",
     researchLead: "I measure how much time goes into computation, memory access, and communication. That helps me decide whether to divide the work differently, change where data is placed, or adjust when processes exchange it.",
     authorNote: <>Author names in <strong>bold</strong> indicate me.</>,
     equalContribution: "equal contribution",
@@ -305,8 +307,8 @@ const COPY = {
       awards: [null, "奖项与荣誉"],
       contact: [null, "联系方式"],
     },
-    aboutLead: <>我在<strong>加州大学默塞德分校（UC Merced）</strong>读计算机软件工程博士。读博前，我在<strong>圣路易斯华盛顿大学</strong>获得了计算机科学硕士学位。</>,
-    aboutBody: "我在 UC Merced 的并行架构、系统与算法实验室参与开发 BloomBee，研究怎么用不同配置的 GPU 一起跑大模型。最近也开始研究量子相位估计模拟器 QPESIM，关注它的并行性能。",
+    aboutLead: <>我在<strong>加州大学默塞德分校（UC Merced）</strong>读计算机软件工程博士，所在的课题组是 <strong><a href={SEQUOIA_LAB_URL} style={{ textDecoration: "underline" }}>Sequoia Lab</a></strong>。读博前，我在<strong>圣路易斯华盛顿大学</strong>获得了计算机科学硕士学位。</>,
+    aboutBody: "我最近开始研究量子相位估计模拟器 QPESIM，关注它的并行性能。此前，我在 UC Merced 的 PASA Lab 做访问研究，参与了 BloomBee 的开发。",
     researchLead: "做性能优化时，我会先看程序的时间主要花在计算、访存还是通信上。如果通信是瓶颈，就试着减少进程间的数据传输。如果卡在访存，就调整数据布局。这些问题在大模型推理和科学模拟里都会遇到。",
     authorNote: <><strong>加粗</strong>的是我的名字。</>,
     equalContribution: "共同一作",
