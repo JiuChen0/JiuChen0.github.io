@@ -250,7 +250,7 @@ const COPY = {
     updatedValue: "November 2026",
     heroMeta: "Ph.D. student at UC Merced",
     heroTitle: "Parallel systems and performance",
-    heroLede: "I study how computation, memory access, and communication shape the performance of programs running across processors and machines. My work spans large-model inference and scientific simulation.",
+    coverLink: "About me",
     sections: {
       about: "About",
       research: "Research",
@@ -279,7 +279,7 @@ const COPY = {
     updatedValue: "2026 年 11 月",
     heroMeta: "加州大学默塞德分校博士生",
     heroTitle: "并行计算与系统性能",
-    heroLede: "我研究程序在多个处理器或多台机器上运行时，时间花在计算、访存还是通信上。目前主要关注大模型推理和科学模拟。",
+    coverLink: "关于我",
     sections: {
       about: "关于我",
       research: "研究方向",
@@ -418,15 +418,116 @@ const Rail = ({ active, language, onLanguageChange }) => {
 
 // ---------- sections ----------
 
-const Hero = ({ showAnim, language }) => {
+const Cover = ({ language, onLanguageChange }) => {
   const copy = COPY[language];
+  const coverRef = useRef(null);
+  const frameRef = useRef(null);
+  const lampRef = useRef(null);
+  const titleRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const cover = coverRef.current;
+    const frame = frameRef.current;
+    const lamp = lampRef.current;
+    const title = titleRef.current;
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    let dimensions;
+    let raf = 0;
+    let progress = 0;
+    let lastTime = 0;
+
+    const targetProgress = () => {
+      const { runway } = dimensions;
+      return motion.matches || !runway ? 0 : Math.min(1, Math.max(0, window.scrollY / runway));
+    };
+
+    const paint = () => {
+      const { x, y, titleX, titleY, height, coverHeight } = dimensions;
+      const sweep = progress * Math.min(144, height * .16);
+      const angle = Math.atan2(titleY + sweep - y, titleX - x);
+      frame.style.setProperty("--cover-progress", progress.toFixed(4));
+      frame.style.setProperty("--beam-angle", `${angle}rad`);
+      frame.style.setProperty("--cover-highlight", `${55 + progress * 155}%`);
+      document.documentElement.toggleAttribute("data-cover-visible", window.scrollY < coverHeight - 88);
+    };
+
+    const measure = () => {
+      const rect = frame.getBoundingClientRect();
+      const source = lamp.getBoundingClientRect();
+      const heading = title.getBoundingClientRect();
+      dimensions = {
+        x: source.left + source.width / 2 - rect.left,
+        y: source.top + source.height / 2 - rect.top,
+        titleX: heading.left + heading.width * .64 - rect.left,
+        titleY: heading.top + heading.height * .56 - rect.top + progress * 22,
+        width: rect.width,
+        height: rect.height,
+        coverHeight: cover.offsetHeight,
+        runway: Math.max(0, cover.offsetHeight - frame.offsetHeight),
+      };
+      frame.style.setProperty("--beam-x", `${dimensions.x}px`);
+      frame.style.setProperty("--beam-y", `${dimensions.y}px`);
+      frame.style.setProperty("--beam-length", `${Math.max(dimensions.width * 1.22, dimensions.height * .8)}px`);
+      progress = targetProgress();
+      paint();
+    };
+
+    const tick = (now) => {
+      raf = 0;
+      const target = targetProgress();
+      const elapsed = lastTime ? now - lastTime : 16;
+      lastTime = now;
+      progress += (target - progress) * (1 - Math.exp(-elapsed / 52));
+      if (Math.abs(target - progress) < .001 || motion.matches) progress = target;
+      paint();
+      if (progress !== target) raf = requestAnimationFrame(tick);
+      else lastTime = 0;
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    measure();
+    const resize = new ResizeObserver(measure);
+    resize.observe(frame);
+    resize.observe(title);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    motion.addEventListener("change", measure);
+
+    return () => {
+      resize.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      motion.removeEventListener("change", measure);
+      cancelAnimationFrame(raf);
+      document.documentElement.removeAttribute("data-cover-visible");
+    };
+  }, [language]);
+
   return (
-  <header className="hero" id="top">
-    <p className="hero-meta">{copy.heroMeta}</p>
-    <h1>{copy.heroTitle}</h1>
-    <p className="hero-lede">{copy.heroLede}</p>
-    {showAnim && <HeroDiagram language={language} />}
-  </header>
+    <header className="cover" id="top" ref={coverRef}>
+      <div className="cover-frame" ref={frameRef}>
+        <div className="cover-landscape" aria-hidden="true">
+          <picture>
+            <source media="(width <= 760px)" srcSet="assets/confluence-mobile.webp" />
+            <img src="assets/confluence.webp" alt="" width="1672" height="941" fetchPriority="high" />
+          </picture>
+          <div className="cover-beacon">
+            <div className="cover-lantern"><div className="cover-lamp" ref={lampRef} /></div>
+          </div>
+        </div>
+        <div className="cover-beam" aria-hidden="true" />
+        <div className="cover-language">
+          <LanguageSwitch language={language} onChange={onLanguageChange} />
+        </div>
+        <div className="cover-copy">
+          <p className="cover-role">{copy.heroMeta}</p>
+          <h1 ref={titleRef}>Jiu Chen</h1>
+          <p className="cover-field">{copy.heroTitle}</p>
+          <a className="cover-link" href="#about">{copy.coverLink}<span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    </header>
   );
 };
 
@@ -445,13 +546,14 @@ const About = ({ language }) => {
   );
 };
 
-const Research = ({ language }) => {
+const Research = ({ language, showAnim }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="research">
     <SectionHead title={copy.sections.research} />
     <div className="s-body">
       <p className="lead">{copy.researchLead}</p>
+      {showAnim && <HeroDiagram language={language} />}
       <div className="research-grid">
         {RESEARCH.map((r) => (
           <div key={r.title} className="research-cell">
@@ -748,12 +850,12 @@ const App = () => {
           onToggle={() => changeTheme(theme === "dark" ? "light" : "dark")}
         />
       </div>
+      <Cover language={language} onLanguageChange={setLanguage} />
       <main className="page">
         <Rail active={active} language={language} onLanguageChange={setLanguage} />
         <div className="content">
-          <Hero showAnim={tweaks.showHeroAnim} language={language} />
           <About language={language} />
-          <Research language={language} />
+          <Research language={language} showAnim={tweaks.showHeroAnim} />
           <Publications language={language} />
           <Projects language={language} />
           <Experience language={language} />
@@ -795,7 +897,7 @@ const App = () => {
               ]}
             />
           </TSection>
-          <TSection label="Hero">
+          <TSection label="Research">
             <TToggle
               label="Animated diagram"
               value={tweaks.showHeroAnim}

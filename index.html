@@ -7,6 +7,9 @@
 
   <script src="theme-preference.js?v=20261121-5"></script>
   <link rel="stylesheet" href="theme-switch.css?v=20261121-7">
+  <link rel="stylesheet" href="cover.css?v=20261121-1">
+  <link rel="preload" href="assets/confluence.webp" as="image" type="image/webp" media="(width > 760px)">
+  <link rel="preload" href="assets/confluence-mobile.webp" as="image" type="image/webp" media="(width <= 760px)">
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
@@ -136,40 +139,10 @@
     .rail-stamp { color: var(--ink-mute); font-size: 12px; }
 
     .content { min-width: 0; }
-    .hero-meta {
-      margin: 0 0 16px;
-      color: var(--ink-mute);
-      font: 400 13px/1.5 var(--mono);
-    }
-
-    .hero h1,
     .s-title {
       margin: 0;
       font-family: var(--display);
       font-weight: 400;
-    }
-
-    .hero h1 {
-      max-width: 16ch;
-      font-size: clamp(44px, 6vw, 80px);
-      line-height: 1.04;
-      letter-spacing: -0.035em;
-      text-wrap: balance;
-    }
-
-    html[lang="zh-CN"] .hero h1 {
-      max-width: none;
-      font-size: clamp(36px, 5.2vw, 68px);
-      line-height: 1.2;
-      letter-spacing: 0;
-    }
-
-    .hero-lede {
-      max-width: 62ch;
-      margin: 20px 0 0;
-      color: var(--ink-soft);
-      font-size: 18px;
-      line-height: 1.6;
     }
 
     section.s {
@@ -178,6 +151,8 @@
       border-top: 1px solid var(--rule);
       scroll-margin-top: var(--controls-clearance);
     }
+
+    .content > section.s:first-child { margin-top: 0; }
 
     .s-title {
       margin-bottom: 20px;
@@ -402,9 +377,7 @@
     }
 
     @media (max-width: 640px) {
-      .hero h1 { font-size: clamp(40px, 11vw, 52px); }
-      html[lang="zh-CN"] .hero h1 { font-size: clamp(28px, 8.8vw, 44px); }
-      .hero-lede, .s-body p.lead { font-size: 16px; }
+      .s-body p.lead { font-size: 16px; }
       section.s { margin-top: 48px; padding-top: 24px; }
 
       .research-cell,
@@ -437,6 +410,6 @@
   <script type="text/babel" src="tweaks-panel.jsx"></script>
   <script type="text/babel" src="hero-diagram.jsx?v=20261121-9"></script>
   <script type="text/babel" src="project-animations.jsx"></script>
-  <script type="text/babel" src="portfolio.jsx?v=20261121-9"></script>
+  <script type="text/babel" src="portfolio.jsx?v=20261121-10"></script>
 </body>
 </html>

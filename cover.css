@@ -1,0 +1,277 @@
+.cover {
+  --cover-runway: clamp(128px, 24svh, 240px);
+  --cover-paper: #eee6d8;
+  --cover-ink: #183657;
+  --cover-lit-ink: #1b5c9a;
+  --cover-beam: 255 249 224;
+  --cover-beam-strength: .98;
+  position: relative;
+  background: var(--bg);
+}
+
+/* Keep the frame in view for the first part of the document scroll. */
+.cover::after {
+  display: block;
+  height: var(--cover-runway);
+  content: "";
+}
+
+html[data-theme="dark"] .cover {
+  --cover-paper: #172837;
+  --cover-ink: #dee9f4;
+  --cover-lit-ink: #fff6d7;
+  --cover-beam: 255 225 161;
+  --cover-beam-strength: .40;
+}
+
+html[data-cover-visible] .site-controls { background: none; }
+
+.cover-frame {
+  position: sticky;
+  top: 0;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: max(620px, 100svh);
+  overflow: clip;
+  background: var(--cover-paper);
+  color: var(--cover-ink);
+}
+
+.cover-landscape {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: max(100%, calc(max(620px, 100svh) * 1672 / 941));
+  height: max(620px, 100svh);
+  pointer-events: none;
+}
+
+.cover-landscape picture,
+.cover-landscape img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html[data-theme="dark"] .cover-landscape img {
+  filter: invert(1) hue-rotate(181deg) saturate(.60) brightness(.74);
+  mix-blend-mode: screen;
+  opacity: .74;
+  mask-image: linear-gradient(to bottom, transparent 3%, #000 66%);
+}
+
+.cover-frame::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: linear-gradient(100deg, var(--cover-paper), transparent 68%);
+  opacity: .24;
+  pointer-events: none;
+  content: "";
+}
+
+.cover-beacon {
+  --beacon-width: clamp(36px, 3.6vw, 62px);
+  position: absolute;
+  left: 88.2%;
+  top: 21%;
+  width: var(--beacon-width);
+  height: calc(var(--beacon-width) * 2.06);
+  color: #243f61;
+  transform: translate(-50%, -100%);
+}
+
+.cover-beacon::before {
+  position: absolute;
+  inset: 36% 4% 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 5px, #28466855 5px 6px),
+    linear-gradient(90deg, #55708c, #e3e3d4 35%, #a9b5bd 75%, #345270);
+  clip-path: polygon(23% 0, 77% 0, 88% 88%, 100% 94%, 100% 100%, 0 100%, 0 94%, 12% 88%);
+  content: "";
+}
+
+.cover-beacon::after {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 25%;
+  background:
+    repeating-linear-gradient(103deg, transparent 0 3px, #9eb4c066 3px 4px),
+    linear-gradient(90deg, #263b58, #70899f, #233951);
+  clip-path: polygon(47% 0, 53% 0, 56% 25%, 87% 70%, 100% 93%, 100% 100%, 0 100%, 0 93%, 13% 70%, 44% 25%);
+  content: "";
+}
+
+.cover-lantern {
+  position: absolute;
+  inset: 23% 12% 56%;
+  border: 2px solid currentColor;
+  border-radius: 2px 2px 4px 4px;
+  box-shadow: 0 3px 0 2px currentColor;
+  background: repeating-linear-gradient(90deg, #ced1c3 0 17%, #344c66 18% 23%);
+}
+
+.cover-lamp {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #fffaf0;
+  box-shadow: 0 0 9px 5px #fff4d3, 0 0 29px 15px #fff0bd86;
+}
+
+.cover-beam {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: var(--beam-length, 0px);
+  height: clamp(230px, 35vw, 540px);
+  transform-origin: 0 0;
+  transform: translate3d(var(--beam-x, 0px), var(--beam-y, 0px), 0)
+    rotate(var(--beam-angle, 0rad)) translateY(-50%);
+  filter: blur(16px);
+  opacity: calc(var(--cover-beam-strength) * (1 - var(--cover-progress, 0) * .61));
+  pointer-events: none;
+}
+
+.cover-beam::before {
+  display: block;
+  height: 100%;
+  background:
+    linear-gradient(90deg, rgb(var(--cover-beam) / 1), rgb(var(--cover-beam) / .88) 44%, transparent),
+    linear-gradient(0deg, transparent 10%, rgb(var(--cover-beam) / .44) 50%, transparent 90%);
+  clip-path: polygon(0 49%, 100% 0, 100% 100%, 0 51%);
+  mask-image: linear-gradient(0deg, transparent 4%, #000 35% 65%, transparent 96%);
+  content: "";
+}
+
+.cover-frame::after {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 20%, var(--bg));
+  opacity: calc(var(--cover-progress, 0) * .96);
+  pointer-events: none;
+  content: "";
+}
+
+.cover-language,
+.cover-copy {
+  z-index: 4;
+  width: min(100%, var(--page-width));
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.cover-language {
+  position: absolute;
+  inset: calc(7px + env(safe-area-inset-top, 0px)) 0 auto;
+  pointer-events: none;
+}
+
+.cover-copy {
+  position: relative;
+  padding-block: 94px;
+  transform: translateY(calc(-22px * var(--cover-progress, 0)));
+}
+
+.cover-role {
+  margin: 0 0 8px;
+  font: 500 clamp(13px, 1.4vw, 17px)/1.6 var(--sans);
+}
+
+.cover-copy h1 {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 18px -.055em;
+  color: var(--cover-ink);
+  font: 400 clamp(76px, 10vw, 154px)/.96 var(--display);
+  letter-spacing: -.066em;
+}
+
+@supports (background-clip: text) {
+  .cover-copy h1 {
+    background: radial-gradient(ellipse at 65% var(--cover-highlight, 55%), var(--cover-lit-ink) 15%, var(--cover-ink) 77%);
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.cover-field {
+  max-width: 18ch;
+  margin: 0;
+  font: 400 clamp(24px, 3.1vw, 46px)/1.18 var(--display);
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+.cover-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 32px;
+  padding-block: 4px;
+  color: inherit;
+  border-bottom: 1px solid currentColor;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cover-link:hover { text-decoration: none; }
+.cover-link span { transition: transform 200ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .cover-link:hover span { transform: translateY(3px); }
+}
+
+@media (max-width: 760px) {
+  .cover { --cover-runway: 135px; }
+  .cover-frame {
+    align-items: start;
+    min-height: max(560px, 100svh);
+  }
+  .cover-landscape {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 720 / 660;
+  }
+  .cover-landscape img { mask-image: linear-gradient(to bottom, transparent, #000 16%); }
+  .cover-beacon {
+    left: 82%;
+    top: 10.6%;
+    --beacon-width: 31px;
+  }
+  .cover-beam {
+    height: clamp(142px, 48vw, 260px);
+    filter: blur(11px);
+  }
+  .cover-copy {
+    padding-top: clamp(111px, 19svh, 177px);
+    padding-bottom: 0;
+  }
+  .cover-copy h1 {
+    font-size: clamp(62px, 17vw, 98px);
+    margin-bottom: 13px;
+  }
+  .cover-field { max-width: 15ch; }
+  html[lang="zh-CN"] .cover-field { max-width: none; }
+  .cover-link { margin-top: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover { --cover-runway: 0px; }
+  .cover-frame { position: relative; }
+  .cover-link span { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .cover-copy h1 { background: none; color: CanvasText; }
+  .cover-beam { display: none; }
+}
