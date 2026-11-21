@@ -190,7 +190,7 @@ const EDUCATION = [
     degreeZh: "电气工程与计算机科学博士",
     where: "University of California, Merced",
     whereZh: "加州大学默塞德分校（UC Merced）",
-    watermark: { kind: "glyph", char: "M" },
+    watermark: { kind: "img", src: "assets/uc-merced-logo.png" },
   },
   {
     when: "2024 — 2025",
