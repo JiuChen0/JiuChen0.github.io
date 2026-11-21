@@ -1,6 +1,4 @@
-/* Jiu Chen — personal site
-   Clean / minimal direction. Single-page scrolling layout with sticky rail nav.
-*/
+/* Jiu Chen's research portfolio. */
 
 const { useState, useEffect, useLayoutEffect, useRef } = React;
 
@@ -21,32 +19,24 @@ const SECTIONS = [
 
 const RESEARCH = [
   {
-    tag: "AREA 01",
-    tagZh: "方向 01",
     title: "System performance optimization",
     titleZh: "系统性能优化",
     blurb: "Profiling parallel workloads to find bottlenecks in computation, memory access, and communication. I study how those bottlenecks shift as the problem size or number of processors grows.",
     blurbZh: "用性能分析工具检查计算效率、内存带宽和通信开销，看看问题规模变大或处理器变多时，瓶颈会不会跟着变。",
   },
   {
-    tag: "AREA 02",
-    tagZh: "方向 02",
     title: "Parallel scientific computing",
     titleZh: "科学计算与并行模拟",
     blurb: "I've started studying QPESIM, a quantum phase estimation simulator, to understand how state-vector partitioning and MPI communication affect performance across processes and nodes.",
     blurbZh: "最近开始研究量子相位估计模拟器 QPESIM，关注状态向量怎么划分、进程之间要交换多少数据，以及这些开销会怎样影响程序在多节点上的性能。",
   },
   {
-    tag: "AREA 03",
-    tagZh: "方向 03",
     title: "Heterogeneous computing",
     titleZh: "异构计算",
     blurb: "Scheduling work across CPUs, GPUs, and other accelerators. I look at where to place data and when offloading pays off once transfer costs are included.",
     blurbZh: "研究怎么在 CPU、GPU 和专用加速器之间分配任务和数据，把传输开销也算进去，判断什么时候把任务交给另一种设备更划算。",
   },
   {
-    tag: "AREA 04",
-    tagZh: "方向 04",
     title: "Distributed LLM inference",
     titleZh: "大模型分布式推理",
     blurb: "Tensor, pipeline, and expert parallelism for serving large models. I study KV-cache scheduling and the tradeoffs among latency, throughput, and GPU memory use.",
@@ -98,7 +88,6 @@ const PROJECTS = [
     stack: ["Arduino", "OpenMV", "PID", "C++"],
     blurb: "Built an autonomous-driving stack for a racing platform at Garmin: Arduino control logic, OpenMV vision for lane detection, RX/TX sensor exchange, PID for path-following, and multi-sensor obstacle-avoidance for real-time adaptability.",
     blurbZh: "在 Garmin，我为 RoboRacer 小车开发了自动导航系统。小车用 OpenMV 识别车道，经 RX/TX 传输传感器数据，由 Arduino 执行 PID 控制，还能用多个传感器实时避障。",
-    links: [{ label: "Writeup", labelZh: "项目介绍", href: "#" }],
   },
   {
     anim: "speech",
@@ -107,7 +96,6 @@ const PROJECTS = [
     stack: ["Python", "TensorFlow", "CNN"],
     blurb: "Designed and trained CNN-based acoustic models at Zhejiang University for speech-to-text on regional Chinese dialects — focusing on accuracy and usability for underserved language variants.",
     blurbZh: "在浙江大学，我用 CNN 训练声学模型，把方言语音转成文字。重点是让训练数据较少的方言也能识别得更准，在实际场景中用得起来。",
-    links: [{ label: "Writeup", labelZh: "项目介绍", href: "#" }],
   },
   {
     anim: "churn",
@@ -116,13 +104,11 @@ const PROJECTS = [
     stack: ["Python", "Logistic Reg.", "Random Forest"],
     blurb: "Built a churn-risk pipeline at China Unicom: feature engineering and time-series user-activity signals fed into logistic regression, decision trees, and random forests; iteratively tuned to improve high-risk identification accuracy.",
     blurbZh: "在中国联通实习时，我根据用户活跃度随时间的变化提取特征，比较并调整了逻辑回归、决策树和随机森林模型，提高了对可能流失用户的识别准确率。",
-    links: [{ label: "Writeup", labelZh: "项目介绍", href: "#" }],
   },
 ];
 
 const EXPERIENCE = [
   {
-    anim: "research",
     when: "Started in 2025",
     whenZh: "2025 年开始",
     title: "Visiting Researcher · Distributed LLM Systems",
@@ -135,7 +121,6 @@ const EXPERIENCE = [
     tagZh: "研究",
   },
   {
-    anim: "teaching",
     when: "2025",
     title: "Graduate Teaching Assistant · CSE 132",
     titleZh: "研究生助教 · CSE 132",
@@ -147,7 +132,6 @@ const EXPERIENCE = [
     tagZh: "教学",
   },
   {
-    anim: "radar",
     when: "2023",
     title: "Machine Recognition Developer",
     titleZh: "机器视觉开发工程师",
@@ -159,7 +143,6 @@ const EXPERIENCE = [
     tagZh: "研发",
   },
   {
-    anim: "waveform",
     when: "2021",
     title: "Research Assistant · Speech Recognition",
     titleZh: "研究助理 · 语音识别",
@@ -171,7 +154,6 @@ const EXPERIENCE = [
     tagZh: "研究",
   },
   {
-    anim: "shield",
     when: "2021",
     title: "Information Security Intern",
     titleZh: "信息安全实习生",
@@ -266,25 +248,24 @@ const COPY = {
     email: "Email",
     updated: "Updated",
     updatedValue: "November 2026",
-    heroMeta: "Ph.D. Student · UC Merced · Systems & HPC",
-    heroLede: "I'm Jiu Chen. I study what limits performance when programs run across many processors or machines. My work spans large-model inference and, more recently, scientific simulation.",
-    heroTags: ["Performance profiling", "Parallel and distributed computing", "Heterogeneous computing", "Scientific simulation"],
+    heroMeta: "Ph.D. student at UC Merced",
+    heroTitle: "Parallel systems and performance",
+    heroLede: "I study how computation, memory access, and communication shape the performance of programs running across processors and machines. My work spans large-model inference and scientific simulation.",
     sections: {
-      about: ["About", "A few words about me."],
-      research: ["Research", "What I think about."],
-      publications: ["Publications", "Papers & preprints."],
-      projects: ["Projects", "Things I've built."],
-      experience: ["Experience", "Where I've worked."],
-      education: ["Education", "Where I studied."],
-      awards: ["Awards", "Honors & recognition."],
-      contact: ["Contact", "Reach me."],
+      about: "About",
+      research: "Research",
+      publications: "Papers & preprints",
+      projects: "Projects",
+      experience: "Experience",
+      education: "Education",
+      awards: "Honors & awards",
+      contact: "Contact",
     },
     aboutLead: <>I'm a Ph.D. student in Computer Software Engineering at the <strong>University of California, Merced</strong> and a member of <strong><a href={SEQUOIA_LAB_URL} style={{ textDecoration: "underline" }}>Sequoia Lab</a></strong>. I earned my M.S. in Computer Science from <strong>Washington University in St. Louis</strong>.</>,
     aboutBody: "I recently started studying parallel performance in QPESIM, a simulator for quantum phase estimation. During an earlier research visit to UC Merced's PASA Lab, I contributed to BloomBee, a distributed system for large-model inference.",
     researchLead: "I measure how much time goes into computation, memory access, and communication. That helps me decide whether to divide the work differently, change where data is placed, or adjust when processes exchange it.",
-    authorNote: <>Author names in <strong>bold</strong> indicate me.</>,
+    authorNote: <>My name is in <strong>bold</strong>.</>,
     equalContribution: "equal contribution",
-    projectsLead: "Code, experiments, and systems I've built across research and industry settings.",
     backToTop: "Back to top ↑",
   },
   zh: {
@@ -296,25 +277,24 @@ const COPY = {
     email: "邮箱",
     updated: "更新于",
     updatedValue: "2026 年 11 月",
-    heroMeta: "加州大学默塞德分校博士生 · 高性能计算",
-    heroLede: "我是 Jiu Chen，主要做并行计算的性能优化。我关心程序跑在多个处理器或多台机器上时，究竟慢在哪里。现在关注的应用包括大模型推理和科学模拟。",
-    heroTags: ["性能分析", "并行与分布式计算", "异构计算", "科学模拟"],
+    heroMeta: "加州大学默塞德分校博士生",
+    heroTitle: "并行计算与系统性能",
+    heroLede: "我研究程序在多个处理器或多台机器上运行时，时间花在计算、访存还是通信上。目前主要关注大模型推理和科学模拟。",
     sections: {
-      about: [null, "关于我"],
-      research: [null, "研究方向"],
-      publications: [null, "论文与预印本"],
-      projects: [null, "项目"],
-      experience: [null, "研究与工作经历"],
-      education: [null, "教育经历"],
-      awards: [null, "奖项与荣誉"],
-      contact: [null, "联系方式"],
+      about: "关于我",
+      research: "研究方向",
+      publications: "论文与预印本",
+      projects: "项目",
+      experience: "研究与工作经历",
+      education: "教育经历",
+      awards: "奖项与荣誉",
+      contact: "联系方式",
     },
     aboutLead: <>我在<strong>加州大学默塞德分校（UC Merced）</strong>读计算机软件工程博士，所在的课题组是 <strong><a href={SEQUOIA_LAB_URL} style={{ textDecoration: "underline" }}>Sequoia Lab</a></strong>。读博前，我在<strong>圣路易斯华盛顿大学</strong>获得了计算机科学硕士学位。</>,
     aboutBody: "我最近开始研究量子相位估计模拟器 QPESIM，关注它的并行性能。此前，我在 UC Merced 的 PASA Lab 做访问研究，参与了 BloomBee 的开发。",
     researchLead: "做性能优化时，我会先看程序的时间主要花在计算、访存还是通信上。如果通信是瓶颈，就试着减少进程间的数据传输。如果卡在访存，就调整数据布局。这些问题在大模型推理和科学模拟里都会遇到。",
     authorNote: <><strong>加粗</strong>的是我的名字。</>,
     equalContribution: "共同一作",
-    projectsLead: "这里有我在研究和实习中做过的项目，从大模型推理到赛车导航和语音识别。",
     backToTop: "回到顶部 ↑",
   },
 };
@@ -396,7 +376,7 @@ const Rail = ({ active, language, onLanguageChange }) => {
   return (
   <aside className="rail">
     <div className="rail-mark">
-      <img className="avatar" src="assets/jiu-chen.jpg" alt="Jiu Chen" />
+      <img className="avatar" src="assets/jiu-chen.jpg" width="40" height="40" alt="" />
       <span>Jiu Chen</span>
     </div>
 
@@ -404,12 +384,13 @@ const Rail = ({ active, language, onLanguageChange }) => {
 
     <div className="rail-section rail-contents">
       <div className="rail-block-label">{copy.contents}</div>
-      <nav className="rail-nav">
+      <nav className="rail-nav" aria-label={copy.contents}>
         {SECTIONS.map((s) => (
           <a
             key={s.id}
             href={`#${s.id}`}
             className={active === s.id ? "active" : ""}
+            aria-current={active === s.id ? "location" : undefined}
           >
             {localize(s, "label", language)}
           </a>
@@ -441,39 +422,21 @@ const Hero = ({ showAnim, language }) => {
   const copy = COPY[language];
   return (
   <header className="hero" id="top">
-    <img className="hero-portrait" src="assets/jiu-chen.jpg" alt="Jiu Chen" />
-    <div className="hero-meta">
-      <span className="pulse"></span>
-      <span>{copy.heroMeta}</span>
-    </div>
-    <h1 style={language === "zh" ? { maxWidth: "none" } : undefined}>
-      {language === "zh" ? (
-        <>让<span className="grad" style={{ whiteSpace: "nowrap" }}>并行计算</span><span style={{ whiteSpace: "nowrap" }}>跑得更快</span></>
-      ) : (
-        <>Making <span className="grad">parallel systems</span> faster.</>
-      )}
-    </h1>
+    <p className="hero-meta">{copy.heroMeta}</p>
+    <h1>{copy.heroTitle}</h1>
     <p className="hero-lede">{copy.heroLede}</p>
-    <div className="hero-tags">
-      {copy.heroTags.map((tag) => <span key={tag}>{tag}</span>)}
-    </div>
-    {showAnim && <HeroDiagram playing={true} language={language} />}
+    {showAnim && <HeroDiagram language={language} />}
   </header>
   );
 };
 
-const SectionHead = ({ eyebrow, title }) => (
-  <>
-    {eyebrow && <div className="s-eyebrow">{eyebrow}</div>}
-    <h2 className="s-title">{title}</h2>
-  </>
-);
+const SectionHead = ({ title }) => <h2 className="s-title">{title}</h2>;
 
 const About = ({ language }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="about">
-    <SectionHead eyebrow={copy.sections.about[0]} title={copy.sections.about[1]} />
+    <SectionHead title={copy.sections.about} />
     <div className="s-body">
       <p className="lead">{copy.aboutLead}</p>
       <p>{copy.aboutBody}</p>
@@ -486,13 +449,12 @@ const Research = ({ language }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="research">
-    <SectionHead eyebrow={copy.sections.research[0]} title={copy.sections.research[1]} />
+    <SectionHead title={copy.sections.research} />
     <div className="s-body">
       <p className="lead">{copy.researchLead}</p>
       <div className="research-grid">
         {RESEARCH.map((r) => (
-          <div key={r.tag} className="research-cell">
-            <div className="tag">{localize(r, "tag", language)}</div>
+          <div key={r.title} className="research-cell">
             <h3>{localize(r, "title", language)}</h3>
             <p>{localize(r, "blurb", language)}</p>
           </div>
@@ -507,9 +469,9 @@ const Publications = ({ language }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="publications">
-    <SectionHead eyebrow={copy.sections.publications[0]} title={copy.sections.publications[1]} />
+    <SectionHead title={copy.sections.publications} />
     <div className="s-body">
-      <p style={{ fontSize: 14.5, color: "var(--ink-mute)", marginBottom: 6 }}>
+      <p className="publication-note">
         {copy.authorNote}
         <span style={{ marginLeft: 8 }}>(<sup style={{ color: "var(--accent)" }}>*</sup> {copy.equalContribution})</span>
       </p>
@@ -550,9 +512,8 @@ const Projects = ({ language }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="projects">
-    <SectionHead eyebrow={copy.sections.projects[0]} title={copy.sections.projects[1]} />
+    <SectionHead title={copy.sections.projects} />
     <div className="s-body">
-      <p className="lead">{copy.projectsLead}</p>
       <div>
         {PROJECTS.map((p, i) => {
           const Anim = window.PROJECT_ANIMS && window.PROJECT_ANIMS[p.anim];
@@ -566,11 +527,13 @@ const Projects = ({ language }) => {
                   {p.stack.map((s, j) => (<span key={j}>{s}</span>))}
                 </div>
                 <p>{localize(p, "blurb", language)}</p>
-                <div className="proj-links">
-                  {p.links.map((l) => (
-                    <a className="pill-link" key={l.label} href={l.href} target="_blank" rel="noopener">{localize(l, "label", language)} <span style={{ opacity: 0.6 }}>↗</span></a>
-                  ))}
-                </div>
+                {p.links && (
+                  <div className="proj-links">
+                    {p.links.map((l) => (
+                      <a className="pill-link" key={l.label} href={l.href} target="_blank" rel="noopener">{localize(l, "label", language)} <span aria-hidden="true">↗</span></a>
+                    ))}
+                  </div>
+                )}
               </div>
               {Anim && (
                 <div className="proj-anim" aria-hidden="true">
@@ -590,30 +553,22 @@ const Experience = ({ language }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="experience">
-    <SectionHead eyebrow={copy.sections.experience[0]} title={copy.sections.experience[1]} />
+    <SectionHead title={copy.sections.experience} />
     <div className="s-body">
       <div>
-        {EXPERIENCE.map((e, i) => {
-          const Anim = window.EXP_ANIMS && window.EXP_ANIMS[e.anim];
-          return (
-            <article className={`exp${Anim ? "" : " no-anim"}`} key={i}>
-              <div className="exp-when">{localize(e, "when", language)}</div>
-              <div className="exp-body">
-                <div className="exp-title-row">
-                  <h3>{localize(e, "title", language)}</h3>
-                  {e.tag && <span className="exp-tag">{localize(e, "tag", language)}</span>}
-                </div>
-                <p className="where">{localize(e, "where", language)}</p>
-                <p>{localize(e, "blurb", language)}</p>
+        {EXPERIENCE.map((e, i) => (
+          <article className="exp" key={i}>
+            <div className="exp-when">{localize(e, "when", language)}</div>
+            <div className="exp-body">
+              <div className="exp-title-row">
+                <h3>{localize(e, "title", language)}</h3>
+                {e.tag && <span className="exp-tag">{localize(e, "tag", language)}</span>}
               </div>
-              {Anim && (
-                <div className="exp-anim-slot" aria-hidden="true">
-                  <Anim />
-                </div>
-              )}
-            </article>
-          );
-        })}
+              <p className="where">{localize(e, "where", language)}</p>
+              <p>{localize(e, "blurb", language)}</p>
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -624,7 +579,7 @@ const Education = ({ language }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="education">
-    <SectionHead eyebrow={copy.sections.education[0]} title={copy.sections.education[1]} />
+    <SectionHead title={copy.sections.education} />
     <div className="s-body">
       <div>
         {EDUCATION.map((e, i) => (
@@ -657,7 +612,7 @@ const Awards = ({ language }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="awards">
-    <SectionHead eyebrow={copy.sections.awards[0]} title={copy.sections.awards[1]} />
+    <SectionHead title={copy.sections.awards} />
     <div className="s-body">
       <ul className="award-list">
         {AWARDS.map((a, i) => (
@@ -676,7 +631,7 @@ const Contact = ({ language }) => {
   const copy = COPY[language];
   return (
   <section className="s" id="contact">
-    <SectionHead eyebrow={copy.sections.contact[0]} title={copy.sections.contact[1]} />
+    <SectionHead title={copy.sections.contact} />
     <div className="s-body">
       <div className="contact-grid">
         <a className="contact-cell" href="mailto:c.jiu@wustl.edu">
@@ -796,6 +751,7 @@ const App = () => {
           <Contact language={language} />
           <div className="colophon">
             <span>© 2026 Jiu Chen</span>
+            <span className="colophon-updated">{COPY[language].updated} · {COPY[language].updatedValue}</span>
             <a href="#top">{COPY[language].backToTop}</a>
           </div>
         </div>

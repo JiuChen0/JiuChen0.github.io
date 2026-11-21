@@ -181,63 +181,26 @@
     }
 
     .hero-meta {
-      font-family: var(--mono);
-      font-size: 11.5px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      margin: 0 0 16px;
       color: var(--ink-mute);
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 22px;
-    }
-    .hero-meta .pulse {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 0 var(--accent);
-      animation: pulse 2.4s ease-out infinite;
-    }
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0   color-mix(in oklch, var(--accent) 60%, transparent); }
-      70%  { box-shadow: 0 0 0 10px color-mix(in oklch, var(--accent) 0%, transparent); }
-      100% { box-shadow: 0 0 0 0   color-mix(in oklch, var(--accent) 0%, transparent); }
+      font: 400 12px/1.5 var(--mono);
     }
 
     .hero h1 {
-      font-family: var(--serif);
-      font-weight: 400;
-      font-size: clamp(48px, 7vw, 84px);
-      line-height: 0.98;
-      letter-spacing: -0.025em;
-      margin: 0 0 18px;
+      margin: 0 0 20px;
       color: var(--ink);
-    }
-    .hero h1 em {
-      font-style: italic;
-      color: var(--accent);
-      font-weight: 400;
+      font: 400 clamp(38px, 6vw, 72px)/1.08 var(--serif);
+      letter-spacing: -0.025em;
+      text-wrap: balance;
     }
 
     .hero-lede {
-      font-family: var(--serif);
-      font-size: 20px;
-      line-height: 1.5;
-      font-weight: 400;
+      max-width: 58ch;
+      margin: 0;
       color: var(--ink-soft);
-      max-width: 56ch;
-      margin: 0 0 32px;
+      font-size: 18px;
+      line-height: 1.6;
     }
-
-    .hero-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 10px;
-      font-family: var(--mono);
-      font-size: 11.5px;
-      color: var(--ink-mute);
-    }
-    .hero-tags span::before { content: "// "; opacity: 0.45; }
 
     /* section */
     section.s {
@@ -307,13 +270,6 @@
       flex-direction: column;
       gap: 8px;
       min-height: 150px;
-    }
-    .research-cell .tag {
-      font-family: var(--mono);
-      font-size: 10.5px;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
     }
     .research-cell h3 {
       font-family: var(--serif);
@@ -574,32 +530,52 @@
       flex-wrap: wrap;
     }
 
-    /* hero animation container */
-    .hero-anim {
-      margin-top: 28px;
-      border: 1px solid var(--rule);
-      background: var(--bg-soft);
-      padding: 18px 20px 14px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-anim-head {
-      font-family: var(--mono);
-      font-size: 10.5px;
-      color: var(--ink-mute);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
+    .colophon-updated { display: none; }
+
+    .rail-mark .avatar {
+      vertical-align: middle;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-inline-end: 8px;
     }
 
-    .toolbar-spacer { height: 0; }
+    .edu {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 48px;
+      gap: 16px;
+      padding-block: 16px;
+      border-top: 1px solid var(--rule);
+    }
+
+    .edu-watermark {
+      display: grid;
+      place-items: center;
+      align-self: center;
+      inline-size: 48px;
+      block-size: 44px;
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+    }
+
+    .edu-watermark img {
+      display: block;
+      max-inline-size: 36px;
+      max-block-size: 32px;
+    }
+
+    @media (max-width: 600px) {
+      .edu { grid-template-columns: minmax(0, 1fr) 48px; gap: 4px 12px; }
+      .edu .exp-when, .edu .exp-body { grid-column: 1; }
+      .edu-watermark { grid-column: 2; grid-row: 1 / span 2; }
+    }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
   <script type="text/babel" src="tweaks-panel.jsx"></script>
-  <script type="text/babel" src="hero-diagram.jsx"></script>
-  <script type="text/babel" src="portfolio.jsx?v=20261121-5"></script>
+  <script type="text/babel" src="hero-diagram.jsx?v=20261121-8"></script>
+  <script type="text/babel" src="portfolio.jsx?v=20261121-8"></script>
 </body>
 </html>
