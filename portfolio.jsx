@@ -21,34 +21,34 @@ const RESEARCH = [
   {
     tag: "AREA 01",
     tagZh: "方向 01",
-    title: "Distributed LLM inference",
-    titleZh: "大模型分布式推理",
-    blurb: "Tensor / pipeline / expert parallelism, KV-cache scheduling, and the serving-time tradeoffs of latency, throughput, and memory pressure on commodity clusters.",
-    blurbZh: "研究怎么把大模型的推理任务分到多张卡上。我关注张量并行、流水线并行、专家并行和 KV 缓存调度，以及怎么在延迟、吞吐量和显存占用之间取得平衡。",
+    title: "System performance optimization",
+    titleZh: "系统性能优化",
+    blurb: "Profiling parallel workloads to find bottlenecks in computation, memory access, and communication. I study how those bottlenecks shift as the problem size or number of processors grows.",
+    blurbZh: "用性能分析工具检查计算效率、内存带宽和通信开销，看看问题规模变大或处理器变多时，瓶颈会不会跟着变。",
   },
   {
     tag: "AREA 02",
     tagZh: "方向 02",
-    title: "Heterogeneous computing",
-    titleZh: "异构计算",
-    blurb: "Co-scheduling across GPU, CPU, and emerging accelerators — placement, offloading, and the cost models that decide where each tensor lives.",
-    blurbZh: "研究怎么在 GPU、CPU 和专用加速器之间分配任务和数据，再用成本模型判断什么时候值得把任务或数据卸载到其他设备。",
+    title: "Parallel scientific computing",
+    titleZh: "科学计算与并行模拟",
+    blurb: "I've started studying QPESIM, a quantum phase estimation simulator, to understand how state-vector partitioning and MPI communication affect performance across processes and nodes.",
+    blurbZh: "最近开始研究量子相位估计模拟器 QPESIM，关注状态向量怎么划分、进程之间要交换多少数据，以及这些开销会怎样影响程序在多节点上的性能。",
   },
   {
     tag: "AREA 03",
     tagZh: "方向 03",
-    title: "System performance",
-    titleZh: "系统性能优化",
-    blurb: "Profiling, kernel-level bottleneck analysis, and the long tail of memory-bandwidth and PCIe / NVLink contention that dominates real workloads.",
-    blurbZh: "从实际运行的任务入手，分析性能瓶颈出在哪里，比如计算内核、内存带宽，或者多个任务同时占用 PCIe、NVLink 链路。",
+    title: "Heterogeneous computing",
+    titleZh: "异构计算",
+    blurb: "Scheduling work across CPUs, GPUs, and other accelerators. I look at where to place data and when offloading pays off once transfer costs are included.",
+    blurbZh: "研究怎么在 CPU、GPU 和专用加速器之间分配任务和数据，把传输开销也算进去，判断什么时候把任务交给另一种设备更划算。",
   },
   {
     tag: "AREA 04",
     tagZh: "方向 04",
-    title: "ML systems for scale",
-    titleZh: "面向大规模部署的机器学习系统",
-    blurb: "Building runtimes and primitives that survive the gap between a clean benchmark and the messy, multi-tenant reality of production serving.",
-    blurbZh: "开发大模型服务的运行时和基础组件，关注多个用户共享计算资源时，系统能否保持稳定的性能。",
+    title: "Distributed LLM inference",
+    titleZh: "大模型分布式推理",
+    blurb: "Tensor, pipeline, and expert parallelism for serving large models. I study KV-cache scheduling and the tradeoffs among latency, throughput, and GPU memory use.",
+    blurbZh: "研究怎么把大模型的推理任务分到多张卡上。我关注张量并行、流水线并行、专家并行和 KV 缓存调度，以及怎么在延迟、吞吐量和显存占用之间取得平衡。",
   },
 ];
 
@@ -256,16 +256,16 @@ const AWARDS = [
 
 const COPY = {
   en: {
-    documentTitle: "Jiu Chen — ML Systems Researcher",
+    documentTitle: "Jiu Chen — Systems & High-Performance Computing",
     languageLabel: "Language",
     contents: "Contents",
     elsewhere: "Elsewhere",
     email: "Email",
     updated: "Updated",
     updatedValue: "November 2026",
-    heroMeta: "Ph.D. Student · UC Merced · ML Systems",
-    heroLede: "I'm Jiu Chen — a computer-science researcher working on machine-learning systems, with a focus on distributed inference for large models, heterogeneous computing, and the long, unglamorous business of performance optimization.",
-    heroTags: ["Distributed inference", "Tensor / pipeline parallelism", "Heterogeneous compute", "Kernel-level perf", "ML runtimes"],
+    heroMeta: "Ph.D. Student · UC Merced · Systems & HPC",
+    heroLede: "I'm Jiu Chen. I study what limits performance when programs run across many processors or machines. My work spans large-model inference and, more recently, scientific simulation.",
+    heroTags: ["Performance profiling", "Parallel and distributed computing", "Heterogeneous computing", "Scientific simulation"],
     sections: {
       about: ["About", "A few words about me."],
       research: ["Research", "What I think about."],
@@ -277,24 +277,24 @@ const COPY = {
       contact: ["Contact", "Reach me."],
     },
     aboutLead: <>I'm a Ph.D. student in Electrical Engineering and Computer Science (EECS) at the <strong>University of California, Merced</strong>. I earned my M.S. in Computer Science from <strong>Washington University in St. Louis</strong>.</>,
-    aboutBody: "At UC Merced's Parallel Architecture, System & Algorithm Lab, I work on BloomBee, focusing on distributed LLM inference and runtime performance on heterogeneous GPUs.",
-    researchLead: "Broadly: how do we make very large models cheap, fast, and predictable to serve? The interesting answers tend to live at the boundary between the model, the runtime, and the hardware.",
+    aboutBody: "At UC Merced's Parallel Architecture, System & Algorithm Lab, I work on BloomBee, a distributed system for large-model inference. I've also started studying QPESIM, a simulator for quantum phase estimation, with a focus on the performance of its parallel implementation.",
+    researchLead: "I measure how much time goes into computation, memory access, and communication. That helps me decide whether to divide the work differently, change where data is placed, or adjust when processes exchange it.",
     authorNote: <>Author names in <strong>bold</strong> indicate me.</>,
     equalContribution: "equal contribution",
     projectsLead: "Code, experiments, and systems I've built across research and industry settings.",
     backToTop: "Back to top ↑",
   },
   zh: {
-    documentTitle: "Jiu Chen｜机器学习系统研究",
+    documentTitle: "Jiu Chen｜系统与高性能计算",
     languageLabel: "语言",
     contents: "目录",
     elsewhere: "站外链接",
     email: "邮箱",
     updated: "更新于",
     updatedValue: "2026 年 11 月",
-    heroMeta: "加州大学默塞德分校博士生 · 机器学习系统",
-    heroLede: "我是 Jiu Chen，主要研究机器学习系统，关注怎么把大模型的推理任务分到不同硬件上，以及怎么找到并解决系统的性能瓶颈。",
-    heroTags: ["大模型分布式推理", "张量并行与流水线并行", "异构计算", "内核性能分析", "机器学习运行时"],
+    heroMeta: "加州大学默塞德分校博士生 · 高性能计算",
+    heroLede: "我是 Jiu Chen，主要做并行计算的性能优化。我关心程序跑在多个处理器或多台机器上时，究竟慢在哪里。现在关注的应用包括大模型推理和科学模拟。",
+    heroTags: ["性能分析", "并行与分布式计算", "异构计算", "科学模拟"],
     sections: {
       about: [null, "关于我"],
       research: [null, "研究方向"],
@@ -306,8 +306,8 @@ const COPY = {
       contact: [null, "联系方式"],
     },
     aboutLead: <>我在<strong>加州大学默塞德分校（UC Merced）</strong>读电气工程与计算机科学博士。读博前，我在<strong>圣路易斯华盛顿大学</strong>获得了计算机科学硕士学位。</>,
-    aboutBody: "我在 UC Merced 的并行架构、系统与算法实验室参与开发 BloomBee，主要研究怎么用不同配置的 GPU 一起跑大模型，并降低推理的开销。",
-    researchLead: "我关注的是大模型上线后怎么跑得更好。比如，在延迟不变的情况下能不能多处理一些请求，或者用更少的显存跑同样的模型。这些问题需要把模型、运行时和硬件放在一起看。",
+    aboutBody: "我在 UC Merced 的并行架构、系统与算法实验室参与开发 BloomBee，研究怎么用不同配置的 GPU 一起跑大模型。最近也开始研究量子相位估计模拟器 QPESIM，关注它的并行性能。",
+    researchLead: "做性能优化时，我会先看程序的时间主要花在计算、访存还是通信上。如果通信是瓶颈，就试着减少进程间的数据传输。如果卡在访存，就调整数据布局。这些问题在大模型推理和科学模拟里都会遇到。",
     authorNote: <><strong>加粗</strong>的是我的名字。</>,
     equalContribution: "共同一作",
     projectsLead: "这里有我在研究和实习中做过的项目，从大模型推理到赛车导航和语音识别。",
@@ -419,9 +419,9 @@ const Hero = ({ showAnim, language }) => {
     </div>
     <h1 style={language === "zh" ? { maxWidth: "none" } : undefined}>
       {language === "zh" ? (
-        <>让<span className="grad">大模型</span><span style={{ whiteSpace: "nowrap" }}>跑得更快</span>、<span style={{ whiteSpace: "nowrap" }}>更稳</span>、<span style={{ whiteSpace: "nowrap" }}>更省。</span></>
+        <>让<span className="grad" style={{ whiteSpace: "nowrap" }}>并行计算</span><span style={{ whiteSpace: "nowrap" }}>跑得更快</span></>
       ) : (
-        <>Building systems for <span className="grad">large&nbsp;models</span> at&nbsp;scale.</>
+        <>Making <span className="grad">parallel systems</span> faster.</>
       )}
     </h1>
     <p className="hero-lede">{copy.heroLede}</p>

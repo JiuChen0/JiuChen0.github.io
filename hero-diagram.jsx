@@ -1,67 +1,55 @@
-/* Hero diagram: distributed inference visualization.
-   Tokens enter from the left, fan out across 4 GPU shards in parallel,
-   then merge into an output stream. Subtle motion, accent-color tokens.
-*/
+/* Illustrate a workload split across four parallel processes. */
 
 const HeroDiagram = ({ playing = true, language = "en" }) => {
   const W = 720;
   const H = 180;
-  const GPU_COUNT = 4;
-  const GPU_W = 60;
-  const GPU_H = 22;
-  const GPU_X = 280;
+  const RANK_COUNT = 4;
+  const RANK_W = 60;
+  const RANK_H = 22;
+  const RANK_X = 280;
   const ENTRY_X = 60;
   const EXIT_X = W - 60;
   const MID_Y = H / 2;
-  const GPU_GAP = 30;
-  const GPU_TOTAL_H = GPU_COUNT * GPU_H + (GPU_COUNT - 1) * GPU_GAP;
-  const GPU_Y0 = (H - GPU_TOTAL_H) / 2;
+  const RANK_GAP = 30;
+  const RANK_TOTAL_H = RANK_COUNT * RANK_H + (RANK_COUNT - 1) * RANK_GAP;
+  const RANK_Y0 = (H - RANK_TOTAL_H) / 2;
   const labels = language === "zh"
     ? {
-        caption: "图 01 · 分布式推理 · 张量并行前向传播",
-        live: "流式传输",
-        prompt: "提示词",
-        logits: "输出",
+        caption: "并行计算与进程间通信",
+        input: "任务输入",
+        output: "结果汇总",
       }
     : {
-        caption: "fig 01 · distributed inference · tensor-parallel forward pass",
-        live: "streaming",
-        prompt: "PROMPT",
-        logits: "LOGITS",
+        caption: "Parallel computation and communication",
+        input: "WORKLOAD",
+        output: "RESULTS",
       };
 
-  const gpus = Array.from({ length: GPU_COUNT }, (_, i) => ({
+  const ranks = Array.from({ length: RANK_COUNT }, (_, i) => ({
     i,
-    y: GPU_Y0 + i * (GPU_H + GPU_GAP) + GPU_H / 2,
+    y: RANK_Y0 + i * (RANK_H + RANK_GAP) + RANK_H / 2,
   }));
 
-  // Generate token streams: each token spawns at a staggered phase,
-  // travels entry -> assigned GPU -> exit. We use CSS animations on
-  // <circle> elements via offset-path... simpler: animate cx/cy with SMIL is unreliable.
-  // We'll use a CSS-driven approach with keyframes per lane.
-
-  const tokens = [];
-  const STREAMS_PER_LANE = 3;
-  gpus.forEach((g, laneIdx) => {
-    for (let k = 0; k < STREAMS_PER_LANE; k++) {
+  const workItems = [];
+  const ITEMS_PER_RANK = 3;
+  ranks.forEach((rank) => {
+    for (let k = 0; k < ITEMS_PER_RANK; k++) {
+      const laneIdx = rank.i;
       const delay = (laneIdx * 0.35 + k * 1.1) % 4.4;
-      tokens.push({ id: `${laneIdx}-${k}`, lane: laneIdx, y: g.y, delay });
+      workItems.push({ id: `${laneIdx}-${k}`, lane: laneIdx, delay });
     }
   });
 
-  // Path for a single lane: entry -> gpu in -> gpu out -> exit
+  // A lane runs from the input through one process to the output.
   const lanePath = (g) => {
-    const gpuLeft = GPU_X;
-    const gpuRight = GPU_X + GPU_W;
-    return `M ${ENTRY_X} ${MID_Y} C ${ENTRY_X + 80} ${MID_Y}, ${gpuLeft - 60} ${g.y}, ${gpuLeft} ${g.y} L ${gpuRight} ${g.y} C ${gpuRight + 60} ${g.y}, ${EXIT_X - 80} ${MID_Y}, ${EXIT_X} ${MID_Y}`;
+    const rankLeft = RANK_X;
+    const rankRight = RANK_X + RANK_W;
+    return `M ${ENTRY_X} ${MID_Y} C ${ENTRY_X + 80} ${MID_Y}, ${rankLeft - 60} ${g.y}, ${rankLeft} ${g.y} L ${rankRight} ${g.y} C ${rankRight + 60} ${g.y}, ${EXIT_X - 80} ${MID_Y}, ${EXIT_X} ${MID_Y}`;
   };
 
   return (
     <div className="hero-anim">
-      <div className="hero-anim-head">
-        <span>{labels.caption}</span>
-        <span className="live">{labels.live}</span>
-      </div>
+      <div className="hero-anim-head">{labels.caption}</div>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         width="100%"
@@ -85,7 +73,7 @@ const HeroDiagram = ({ playing = true, language = "en" }) => {
         </defs>
 
         {/* Lane paths (faint) */}
-        {gpus.map((g) => (
+        {ranks.map((g) => (
           <path
             key={`p-${g.i}`}
             d={lanePath(g)}
@@ -97,24 +85,22 @@ const HeroDiagram = ({ playing = true, language = "en" }) => {
 
         {/* Entry & exit labels */}
         <g fontFamily="var(--mono)" fontSize="10" fill="var(--ink-mute)" letterSpacing="0.06em" fontWeight="600">
-          <text x={ENTRY_X} y={MID_Y - 14} textAnchor="middle">{labels.prompt}</text>
-          <text x={ENTRY_X} y={MID_Y + 22} textAnchor="middle" fill="var(--ink-soft)" fontSize="10" fontWeight="500">tok[i]</text>
-          <text x={EXIT_X} y={MID_Y - 14} textAnchor="middle">{labels.logits}</text>
-          <text x={EXIT_X} y={MID_Y + 22} textAnchor="middle" fill="var(--ink-soft)" fontSize="10" fontWeight="500">y[i+1]</text>
+          <text x={ENTRY_X} y={MID_Y - 14} textAnchor="middle">{labels.input}</text>
+          <text x={EXIT_X} y={MID_Y - 14} textAnchor="middle">{labels.output}</text>
         </g>
 
         {/* Entry/exit nodes */}
         <circle cx={ENTRY_X} cy={MID_Y} r="5" fill="var(--bg)" stroke="var(--ink-soft)" strokeWidth="1.2" />
         <circle cx={EXIT_X} cy={MID_Y} r="5" fill="var(--bg)" stroke="var(--ink-soft)" strokeWidth="1.2" />
 
-        {/* GPU shards */}
-        {gpus.map((g) => (
+        {/* Parallel processes */}
+        {ranks.map((g) => (
           <g key={`g-${g.i}`}>
             <rect
-              x={GPU_X}
-              y={g.y - GPU_H / 2}
-              width={GPU_W}
-              height={GPU_H}
+              x={RANK_X}
+              y={g.y - RANK_H / 2}
+              width={RANK_W}
+              height={RANK_H}
               rx="5"
               ry="5"
               fill="var(--bg)"
@@ -122,7 +108,7 @@ const HeroDiagram = ({ playing = true, language = "en" }) => {
               strokeWidth="1"
             />
             <text
-              x={GPU_X + GPU_W / 2}
+              x={RANK_X + RANK_W / 2}
               y={g.y + 3.5}
               textAnchor="middle"
               fontFamily="var(--mono)"
@@ -131,13 +117,13 @@ const HeroDiagram = ({ playing = true, language = "en" }) => {
               letterSpacing="-0.005em"
               fontWeight="500"
             >
-              gpu:{g.i}
+              rank {g.i}
             </text>
-            {/* GPU activity tick */}
+            {/* Process activity indicator */}
             <rect
-              x={GPU_X + 4}
-              y={g.y + GPU_H / 2 - 4}
-              width={GPU_W - 8}
+              x={RANK_X + 4}
+              y={g.y + RANK_H / 2 - 4}
+              width={RANK_W - 8}
               height={1.5}
               fill="var(--accent)"
               opacity="0.35"
@@ -145,27 +131,15 @@ const HeroDiagram = ({ playing = true, language = "en" }) => {
           </g>
         ))}
 
-        {/* All-reduce annotation between GPUs */}
-        <g
-          fontFamily="var(--mono)"
-          fontSize="9.5"
-          fill="var(--ink-mute)"
-          letterSpacing="0.08em"
-          fontWeight="600"
-        >
-          <text x={GPU_X + GPU_W / 2} y={GPU_Y0 - 6} textAnchor="middle">
-            ALL-REDUCE
-          </text>
-        </g>
-        {/* tiny vertical ticks between GPUs to suggest comm */}
-        {gpus.slice(0, -1).map((g, idx) => {
-          const y1 = g.y + GPU_H / 2;
-          const y2 = gpus[idx + 1].y - GPU_H / 2;
+        {/* Communication between processes */}
+        {ranks.slice(0, -1).map((g, idx) => {
+          const y1 = g.y + RANK_H / 2;
+          const y2 = ranks[idx + 1].y - RANK_H / 2;
           return (
             <line
               key={`comm-${idx}`}
-              x1={GPU_X + GPU_W / 2}
-              x2={GPU_X + GPU_W / 2}
+              x1={RANK_X + RANK_W / 2}
+              x2={RANK_X + RANK_W / 2}
               y1={y1}
               y2={y2}
               stroke="var(--accent)"
@@ -176,9 +150,9 @@ const HeroDiagram = ({ playing = true, language = "en" }) => {
           );
         })}
 
-        {/* Animated tokens flowing along each lane */}
-        {tokens.map((t) => {
-          const g = gpus[t.lane];
+        {/* Animated work items */}
+        {workItems.map((t) => {
+          const g = ranks[t.lane];
           const d = lanePath(g);
           return (
             <circle
