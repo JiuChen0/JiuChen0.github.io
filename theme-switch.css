@@ -19,7 +19,12 @@
  */
 
 :root {
+  color-scheme: only light;
   --controls-clearance: calc(76px + env(safe-area-inset-top, 0px));
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 #top {
