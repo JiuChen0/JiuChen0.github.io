@@ -2,7 +2,7 @@
    Clean / minimal direction. Single-page scrolling layout with sticky rail nav.
 */
 
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useLayoutEffect, useRef } = React;
 
 // ---------- data ----------
 
@@ -260,6 +260,7 @@ const COPY = {
   en: {
     documentTitle: "Jiu Chen — Systems & High-Performance Computing",
     languageLabel: "Language",
+    themeLabel: "Dark mode",
     contents: "Contents",
     elsewhere: "Elsewhere",
     email: "Email",
@@ -289,6 +290,7 @@ const COPY = {
   zh: {
     documentTitle: "Jiu Chen｜系统与高性能计算",
     languageLabel: "语言",
+    themeLabel: "深色模式",
     contents: "目录",
     elsewhere: "站外链接",
     email: "邮箱",
@@ -364,7 +366,27 @@ const LanguageSwitch = ({ language, onChange }) => (
   </div>
 );
 
-const Rail = ({ active, language, onLanguageChange }) => {
+const ThemeSwitch = ({ dark, label, onToggle }) => (
+  <button
+    type="button"
+    className="theme-switch"
+    role="switch"
+    aria-checked={dark}
+    aria-label={label}
+    title={label}
+    onClick={onToggle}
+  >
+    <span className="theme-switch__track" aria-hidden="true">
+      <span className="theme-switch__clouds" />
+      <span className="theme-switch__stars" />
+      <span className="theme-switch__orb">
+        <span className="theme-switch__craters" />
+      </span>
+    </span>
+  </button>
+);
+
+const Rail = ({ active, language, onLanguageChange, theme, onThemeChange }) => {
   const copy = COPY[language];
   return (
   <aside className="rail">
@@ -373,7 +395,14 @@ const Rail = ({ active, language, onLanguageChange }) => {
       <span>Jiu Chen</span>
     </div>
 
-    <LanguageSwitch language={language} onChange={onLanguageChange} />
+    <div className="appearance-controls">
+      <LanguageSwitch language={language} onChange={onLanguageChange} />
+      <ThemeSwitch
+        dark={theme === "dark"}
+        label={copy.themeLabel}
+        onToggle={() => onThemeChange(theme === "dark" ? "light" : "dark")}
+      />
+    </div>
 
     <div className="rail-section rail-contents">
       <div className="rail-block-label">{copy.contents}</div>
@@ -682,6 +711,16 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "showHeroAnim": true
 }/*EDITMODE-END*/;
 
+const getInitialTweaks = () => ({
+  ...TWEAK_DEFAULTS,
+  theme: document.documentElement.dataset.theme || TWEAK_DEFAULTS.theme,
+});
+
+const useSiteTweaks = window.useTweaks || function useLocalTweaks(initialValues) {
+  const [values, setValues] = useState(initialValues);
+  return [values, (key, value) => setValues((current) => ({ ...current, [key]: value }))];
+};
+
 const ACCENTS = {
   blue:   { light: "#0066cc", lightBg: "rgba(0,102,204,0.08)",  dark: "#2997ff", darkBg: "rgba(41,151,255,0.14)" },
   indigo: { light: "#5e5ce6", lightBg: "rgba(94,92,230,0.10)",  dark: "#7d7aff", darkBg: "rgba(125,122,255,0.16)" },
@@ -709,13 +748,20 @@ const getInitialLanguage = () => {
 // ---------- root ----------
 
 const App = () => {
-  const [tweaks, setTweak] = window.useTweaks
-    ? window.useTweaks(TWEAK_DEFAULTS)
-    : [TWEAK_DEFAULTS, () => {}];
+  const [tweaks, setTweak] = useSiteTweaks(getInitialTweaks);
   const [language, setLanguage] = useState(getInitialLanguage);
   const active = useActiveSection(SECTIONS.map((s) => s.id));
 
-  useEffect(() => {
+  const changeTheme = (theme) => {
+    setTweak("theme", theme);
+    try {
+      window.localStorage.setItem("jiu-chen-theme", theme);
+    } catch (_) {
+      // Theme switching still works when storage is unavailable.
+    }
+  };
+
+  useLayoutEffect(() => {
     applyTheme(tweaks.theme, tweaks.accent);
   }, [tweaks.theme, tweaks.accent]);
 
@@ -738,7 +784,13 @@ const App = () => {
   return (
     <>
       <main className="page">
-        <Rail active={active} language={language} onLanguageChange={setLanguage} />
+        <Rail
+          active={active}
+          language={language}
+          onLanguageChange={setLanguage}
+          theme={tweaks.theme}
+          onThemeChange={changeTheme}
+        />
         <div className="content">
           <Hero showAnim={tweaks.showHeroAnim} language={language} />
           <About language={language} />
@@ -762,7 +814,7 @@ const App = () => {
             <TRadio
               label="Theme"
               value={tweaks.theme}
-              onChange={(v) => setTweak("theme", v)}
+              onChange={changeTheme}
               options={[
                 { label: "Light", value: "light" },
                 { label: "Dark",  value: "dark" },

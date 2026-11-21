@@ -1,0 +1,198 @@
+/*
+ * Day/night switch adapted from https://github.com/Xiumuzaidiao/Day-night-toggle-button
+ *
+ * ISC License
+ *
+ * Copyright(c)2024,Xiumuzaidiao
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+.appearance-controls {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.theme-switch {
+  --switch-width: 84px;
+  --switch-height: 34px;
+  --orb-size: 26px;
+  --orb-inset: 4px;
+  --orb-travel: calc(var(--switch-width) - var(--orb-size) - 2 * var(--orb-inset));
+  --switch-ease: cubic-bezier(0.25, 0.72, 0.28, 1);
+  appearance: none;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  inline-size: var(--switch-width);
+  min-block-size: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.theme-switch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.theme-switch__track {
+  position: relative;
+  display: block;
+  isolation: isolate;
+  overflow: hidden;
+  inline-size: 100%;
+  block-size: var(--switch-height);
+  border-radius: inherit;
+  background-color: #478dbe;
+  box-shadow: inset 0 2px 4px rgba(18, 36, 66, 0.38), 0 0 0 1px var(--rule);
+  transition: background-color 360ms ease, transform 160ms ease;
+}
+
+.theme-switch:active .theme-switch__track {
+  transform: scale(0.96);
+}
+
+.theme-switch__orb {
+  position: absolute;
+  top: var(--orb-inset);
+  left: var(--orb-inset);
+  inline-size: var(--orb-size);
+  block-size: var(--orb-size);
+  border-radius: 50%;
+  background-color: #ffcb58;
+  box-shadow: inset 0 1px 2px #ffefa0, inset 0 -2px 3px rgba(151, 83, 0, 0.28),
+    0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 6px rgba(255, 255, 255, 0.14),
+    0 0 0 12px rgba(255, 255, 255, 0.10), 0 0 0 18px rgba(255, 255, 255, 0.06);
+  transition: transform 420ms var(--switch-ease), background-color 320ms ease, box-shadow 320ms ease;
+}
+
+.theme-switch__craters {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 30% 54%, #929db2 3.5px, transparent 4px),
+    radial-gradient(circle at 65% 29%, #a2acc0 2px, transparent 2.5px),
+    radial-gradient(circle at 68% 71%, #9aa5ba 2.5px, transparent 3px);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.theme-switch__clouds,
+.theme-switch__stars {
+  position: absolute;
+  transition: transform 420ms var(--switch-ease), opacity 300ms ease;
+}
+
+.theme-switch__clouds {
+  inset: 0 -6px 0 auto;
+  inline-size: 56px;
+}
+
+.theme-switch__clouds::before,
+.theme-switch__clouds::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+  inline-size: 24px;
+  block-size: 24px;
+  border-radius: 50%;
+  background: #f5fbff;
+  box-shadow: -12px 10px 0 #f5fbff, -25px 13px 0 #f5fbff, -38px 19px 0 #f5fbff;
+}
+
+.theme-switch__clouds::before {
+  opacity: 0.5;
+  transform: translate(-5px, -5px);
+}
+
+.theme-switch__stars {
+  inset: 0 auto 0 0;
+  inline-size: 50px;
+  background:
+    radial-gradient(circle at 23% 63%, #eaf3ff 0.8px, transparent 1.3px),
+    radial-gradient(circle at 55% 74%, #c8dbf7 0.9px, transparent 1.4px),
+    radial-gradient(circle at 83% 25%, #eaf3ff 1px, transparent 1.5px),
+    radial-gradient(circle at 74% 48%, #c8dbf7 0.6px, transparent 1.1px);
+  opacity: 0;
+  transform: translateY(-9px);
+}
+
+.theme-switch__stars::before,
+.theme-switch__stars::after {
+  content: "";
+  position: absolute;
+  inline-size: 7px;
+  block-size: 7px;
+  background: #f2f7ff;
+  clip-path: polygon(50% 0, 64% 36%, 100% 50%, 64% 64%, 50% 100%, 36% 64%, 0 50%, 36% 36%);
+}
+
+.theme-switch__stars::before {
+  top: 7px;
+  left: 14px;
+}
+
+.theme-switch__stars::after {
+  top: 18px;
+  left: 32px;
+  transform: scale(0.72);
+}
+
+.theme-switch[aria-checked="true"] .theme-switch__track {
+  background-color: #171f38;
+}
+
+.theme-switch[aria-checked="true"] .theme-switch__orb {
+  background-color: #d7deeb;
+  box-shadow: inset 0 1px 2px #f0f6ff, inset 0 -2px 3px rgba(49, 64, 88, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.4), 0 0 0 6px rgba(255, 255, 255, 0.12),
+    0 0 0 12px rgba(255, 255, 255, 0.08), 0 0 0 18px rgba(255, 255, 255, 0.05);
+  transform: translateX(var(--orb-travel));
+}
+
+.theme-switch[aria-checked="true"] .theme-switch__clouds {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.theme-switch[aria-checked="true"] .theme-switch__stars,
+.theme-switch[aria-checked="true"] .theme-switch__craters {
+  opacity: 1;
+}
+
+.theme-switch[aria-checked="true"] .theme-switch__stars {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch__track,
+  .theme-switch__orb,
+  .theme-switch__craters,
+  .theme-switch__clouds,
+  .theme-switch__stars {
+    transition: none;
+  }
+
+  .theme-switch:active .theme-switch__track {
+    transform: none;
+  }
+}

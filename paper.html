@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Jiu Chen — Systems &amp; High-Performance Computing</title>
 
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("jiu-chen-theme");
+      if (savedTheme === "light" || savedTheme === "dark") {
+        document.documentElement.dataset.theme = savedTheme;
+      }
+    } catch (_) {}
+  </script>
+  <link rel="stylesheet" href="theme-switch.css">
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -117,7 +127,6 @@
 
     .language-switch {
       display: inline-flex;
-      align-self: flex-start;
       gap: 2px;
       padding: 3px;
       background: var(--bg-soft);
