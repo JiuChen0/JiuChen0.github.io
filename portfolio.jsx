@@ -709,11 +709,6 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "showHeroAnim": true
 }/*EDITMODE-END*/;
 
-const getInitialTweaks = () => ({
-  ...TWEAK_DEFAULTS,
-  theme: document.documentElement.dataset.theme || TWEAK_DEFAULTS.theme,
-});
-
 const useSiteTweaks = window.useTweaks || function useLocalTweaks(initialValues) {
   const [values, setValues] = useState(initialValues);
   return [values, (key, value) => setValues((current) => ({ ...current, [key]: value }))];
@@ -746,22 +741,21 @@ const getInitialLanguage = () => {
 // ---------- root ----------
 
 const App = () => {
-  const [tweaks, setTweak] = useSiteTweaks(getInitialTweaks);
+  const [tweaks, setTweak] = useSiteTweaks(TWEAK_DEFAULTS);
+  const [theme, setTheme] = useState(() => window.siteThemePreference?.read() ?? TWEAK_DEFAULTS.theme);
   const [language, setLanguage] = useState(getInitialLanguage);
   const active = useActiveSection(SECTIONS.map((s) => s.id));
 
-  const changeTheme = (theme) => {
-    setTweak("theme", theme);
-    try {
-      window.localStorage.setItem("jiu-chen-theme", theme);
-    } catch (_) {
-      // Theme switching still works when storage is unavailable.
-    }
+  const changeTheme = (nextTheme) => {
+    setTheme(nextTheme);
+    window.siteThemePreference?.save(nextTheme);
   };
 
   useLayoutEffect(() => {
-    applyTheme(tweaks.theme, tweaks.accent);
-  }, [tweaks.theme, tweaks.accent]);
+    applyTheme(theme, tweaks.accent);
+  }, [theme, tweaks.accent]);
+
+  useEffect(() => window.siteThemePreference?.subscribe(setTheme), []);
 
   useEffect(() => {
     const copy = COPY[language];
@@ -783,9 +777,9 @@ const App = () => {
     <>
       <div className="site-controls">
         <ThemeSwitch
-          dark={tweaks.theme === "dark"}
+          dark={theme === "dark"}
           label={COPY[language].themeLabel}
-          onToggle={() => changeTheme(tweaks.theme === "dark" ? "light" : "dark")}
+          onToggle={() => changeTheme(theme === "dark" ? "light" : "dark")}
         />
       </div>
       <main className="page">
@@ -812,8 +806,11 @@ const App = () => {
           <TSection label="Appearance">
             <TRadio
               label="Theme"
-              value={tweaks.theme}
-              onChange={changeTheme}
+              value={theme}
+              onChange={(value) => {
+                changeTheme(value);
+                setTweak("theme", value);
+              }}
               options={[
                 { label: "Light", value: "light" },
                 { label: "Dark",  value: "dark" },
