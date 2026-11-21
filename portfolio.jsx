@@ -713,6 +713,17 @@ const App = () => {
   useEffect(() => window.siteThemePreference?.subscribe(setTheme), []);
 
   useEffect(() => {
+    if (!window.IntersectionObserver) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        target.toggleAttribute("data-motion-paused", !isIntersecting);
+      });
+    });
+    document.querySelectorAll(".hero-anim, .proj-anim").forEach((figure) => observer.observe(figure));
+    return () => observer.disconnect();
+  }, [tweaks.showHeroAnim]);
+
+  useEffect(() => {
     const copy = COPY[language];
     document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
     document.title = copy.documentTitle;

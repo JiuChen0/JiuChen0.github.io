@@ -94,7 +94,10 @@ const HeroDiagram = ({ language = "en" }) => {
         .hero-tok {
           opacity: 0;
           offset-rotate: 0deg;
-          animation: hero-flow 2.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation: hero-flow 3.8s linear infinite;
+        }
+        .hero-anim[data-motion-paused] .hero-tok {
+          animation-play-state: paused;
         }
         @keyframes hero-flow {
           0% { offset-distance: 0%; opacity: 0; }
@@ -140,7 +143,7 @@ const HeroDiagram = ({ language = "en" }) => {
               r="3"
               fill="var(--accent)"
               className="hero-tok"
-              style={{ offsetPath: `path("${laneFor(y)}")`, animationDelay: `${i * 100}ms` }}
+              style={{ offsetPath: `path("${laneFor(y)}")`, animationDelay: `${i * -950}ms` }}
             />
           ))}
         </svg>
