@@ -509,8 +509,8 @@ const Cover = ({ language, onLanguageChange }) => {
       <div className="cover-frame" ref={frameRef}>
         <div className="cover-landscape" aria-hidden="true">
           <picture>
-            <source media="(width <= 760px)" srcSet="assets/confluence-mobile.webp" />
-            <img src="assets/confluence.webp" alt="" width="1672" height="941" fetchPriority="high" />
+            <source media="(width <= 760px)" srcSet="assets/confluence-dusk-mobile.webp" />
+            <img src="assets/confluence-dusk.webp" alt="" width="1672" height="941" fetchPriority="high" />
           </picture>
           <div className="cover-beacon">
             <div className="cover-lantern"><div className="cover-lamp" ref={lampRef} /></div>
