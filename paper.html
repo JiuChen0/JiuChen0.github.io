@@ -6,7 +6,7 @@
   <title>Jiu Chen — Systems &amp; High-Performance Computing</title>
 
   <script src="theme-preference.js?v=20261121-5"></script>
-  <link rel="stylesheet" href="theme-switch.css?v=20261121-6">
+  <link rel="stylesheet" href="theme-switch.css?v=20261121-7">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,8 +37,8 @@
     }
 
     html[data-theme="dark"] {
-      --bg:        oklch(0.17 0.008 60);
-      --bg-soft:   oklch(0.21 0.010 60);
+      --bg:        var(--dark-canvas, #121212);
+      --bg-soft:   color-mix(in srgb, var(--bg), CanvasText 5%);
       --ink:       oklch(0.93 0.008 80);
       --ink-soft:  oklch(0.72 0.010 70);
       --ink-mute:  oklch(0.55 0.010 70);

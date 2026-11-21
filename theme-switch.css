@@ -25,6 +25,14 @@
 
 html[data-theme="dark"] {
   color-scheme: dark;
+  --dark-canvas: #121212;
+}
+
+@supports (color: rgb(from Canvas max(r, 18) max(g, 18) max(b, 18))) {
+  html[data-theme="dark"] {
+    /* Use the browser's canvas with a charcoal minimum on OLED themes. */
+    --dark-canvas: rgb(from Canvas max(r, 18) max(g, 18) max(b, 18));
+  }
 }
 
 #top {
