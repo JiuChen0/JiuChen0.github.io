@@ -1,23 +1,8 @@
 .research-story {
-  --research-travel: clamp(300px, 55svh, 500px);
+  --scene-runway: clamp(300px, 55svh, 500px);
   --research-dispatch: 0;
   --research-exchange: 0;
   --research-gather: 0;
-}
-
-.research-scene {
-  top: max(var(--controls-clearance), min(14svh, 112px));
-}
-
-.research-story[data-scroll-enabled] .research-scene {
-  position: sticky;
-  background: var(--bg);
-}
-
-.research-story[data-scroll-enabled]::after {
-  display: block;
-  height: var(--research-travel);
-  content: "";
 }
 
 .research-diagram {
@@ -182,7 +167,7 @@
 }
 
 @media (max-width: 640px) {
-  .research-story { --research-travel: clamp(270px, 49svh, 400px); }
+  .research-story { --scene-runway: clamp(270px, 49svh, 400px); }
   .research-diagram { margin-top: 17px; padding: 14px; }
   .research-diagram figcaption { margin-bottom: 12px; }
   .research-network { height: 148px; font-size: 10.5px; }
@@ -192,8 +177,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .research-story[data-scroll-enabled] .research-scene { position: static; }
-  .research-story[data-scroll-enabled]::after { display: none; }
   .research-story .research-steps li::before { display: none; }
   .research-story .research-packet { visibility: hidden; }
   .research-rank { transition: none; }

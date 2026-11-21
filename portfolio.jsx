@@ -533,16 +533,22 @@ const Cover = ({ language, onLanguageChange }) => {
 
 const SectionHead = ({ title }) => <h2 className="s-title">{title}</h2>;
 
+const ChapterScene = ({ title, children }) => (
+  <ScrollScene className="chapter-scene">
+    <SectionHead title={title} />
+    <div className="s-body">{children}</div>
+  </ScrollScene>
+);
+
 const About = ({ language }) => {
   const copy = COPY[language];
   return (
-  <section className="s" id="about">
-    <SectionHead title={copy.sections.about} />
-    <div className="s-body">
-      <p className="lead">{copy.aboutLead}</p>
-      <p>{copy.aboutBody}</p>
-    </div>
-  </section>
+    <section className="s" id="about">
+      <ChapterScene title={copy.sections.about}>
+        <p className="lead">{copy.aboutLead}</p>
+        <p data-reveal="2">{copy.aboutBody}</p>
+      </ChapterScene>
+    </section>
   );
 };
 
@@ -573,123 +579,114 @@ const Research = ({ language, showAnim }) => {
 
 const Publications = ({ language }) => {
   const copy = COPY[language];
-  return (
-  <section className="s" id="publications">
-    <SectionHead title={copy.sections.publications} />
-    <div className="s-body">
-      <p className="publication-note">
-        {copy.authorNote}
-        <span style={{ marginLeft: 8 }}>(<sup style={{ color: "var(--accent)" }}>*</sup> {copy.equalContribution})</span>
-      </p>
-      <div>
-        {PUBLICATIONS.map((p, i) => (
-          <article className="pub" key={i}>
-            <div className="pub-meta">
-              <span className="y">{p.year}</span>
-              <span>{localize(p, "venue", language)}</span>
-            </div>
-            <div className="pub-body">
-              <h3>{p.title}</h3>
-              <p className="authors">
-                {p.authors.map((a, j) => (
-                  <React.Fragment key={j}>
-                    {a.me ? <strong>{a.name}</strong> : a.name}
-                    {a.eq ? <sup style={{ color: "var(--accent)", marginLeft: 1 }}>*</sup> : null}
-                    {j < p.authors.length - 1 ? ", " : ""}
-                  </React.Fragment>
-                ))}
-              </p>
-              <p className="venue">{localize(p, "venueLong", language)}</p>
-              <div className="pub-links">
-                {p.links.map((l) => (
-                  <a className="pill-link" key={l.label} href={l.href} target="_blank" rel="noopener">{localize(l, "label", language)} <span style={{ opacity: 0.6 }}>↗</span></a>
-                ))}
-              </div>
-            </div>
-          </article>
-        ))}
+  const papers = PUBLICATIONS.map((p) => (
+    <article className="pub" key={p.title}>
+      <div className="pub-meta">
+        <span className="y">{p.year}</span>
+        <span>{localize(p, "venue", language)}</span>
       </div>
-    </div>
-  </section>
+      <div className="pub-body">
+        <h3>{p.title}</h3>
+        <p className="authors" data-reveal="1">
+          {p.authors.map((a, j) => (
+            <React.Fragment key={j}>
+              {a.me ? <strong>{a.name}</strong> : a.name}
+              {a.eq ? <sup style={{ color: "var(--accent)", marginLeft: 1 }}>*</sup> : null}
+              {j < p.authors.length - 1 ? ", " : ""}
+            </React.Fragment>
+          ))}
+        </p>
+        <p className="venue" data-reveal="2">{localize(p, "venueLong", language)}</p>
+        <div className="pub-links" data-reveal="3">
+          {p.links.map((l) => (
+            <a className="pill-link" key={l.label} href={l.href} target="_blank" rel="noopener">{localize(l, "label", language)} <span style={{ opacity: 0.6 }}>↗</span></a>
+          ))}
+        </div>
+      </div>
+    </article>
+  ));
+  return (
+    <section className="s" id="publications">
+      <ChapterScene title={copy.sections.publications}>
+        <p className="publication-note">
+          {copy.authorNote}
+          <span style={{ marginLeft: 8 }}>(<sup style={{ color: "var(--accent)" }}>*</sup> {copy.equalContribution})</span>
+        </p>
+        {papers[0]}
+      </ChapterScene>
+      {papers.length > 1 && <div className="s-body">{papers.slice(1)}</div>}
+    </section>
   );
 };
 
 const Projects = ({ language }) => {
   const copy = COPY[language];
+  const projects = PROJECTS.map((p) => {
+    const Anim = window.PROJECT_ANIMS && window.PROJECT_ANIMS[p.anim];
+    return (
+      <article className="proj" key={p.title}>
+        <div className="proj-text">
+          <div className="proj-head">
+            <h3>{localize(p, "title", language)}</h3>
+          </div>
+          <div className="proj-stack" data-reveal="1">
+            {p.stack.map((s, j) => (<span key={j}>{s}</span>))}
+          </div>
+          <p data-reveal="2">{localize(p, "blurb", language)}</p>
+          {p.links && (
+            <div className="proj-links" data-reveal="3">
+              {p.links.map((l) => (
+                <a className="pill-link" key={l.label} href={l.href} target="_blank" rel="noopener">{localize(l, "label", language)} <span aria-hidden="true">↗</span></a>
+              ))}
+            </div>
+          )}
+        </div>
+        {Anim && (
+          <div className="proj-anim" aria-hidden="true" data-reveal="1">
+            <Anim />
+          </div>
+        )}
+      </article>
+    );
+  });
   return (
-  <section className="s" id="projects">
-    <SectionHead title={copy.sections.projects} />
-    <div className="s-body">
-      <div>
-        {PROJECTS.map((p, i) => {
-          const Anim = window.PROJECT_ANIMS && window.PROJECT_ANIMS[p.anim];
-          return (
-            <article className="proj" key={i}>
-              <div className="proj-text">
-                <div className="proj-head">
-                  <h3>{localize(p, "title", language)}</h3>
-                </div>
-                <div className="proj-stack">
-                  {p.stack.map((s, j) => (<span key={j}>{s}</span>))}
-                </div>
-                <p>{localize(p, "blurb", language)}</p>
-                {p.links && (
-                  <div className="proj-links">
-                    {p.links.map((l) => (
-                      <a className="pill-link" key={l.label} href={l.href} target="_blank" rel="noopener">{localize(l, "label", language)} <span aria-hidden="true">↗</span></a>
-                    ))}
-                  </div>
-                )}
-              </div>
-              {Anim && (
-                <div className="proj-anim" aria-hidden="true">
-                  <Anim />
-                </div>
-              )}
-            </article>
-          );
-        })}
-      </div>
-    </div>
-  </section>
+    <section className="s" id="projects">
+      <ChapterScene title={copy.sections.projects}>{projects[0]}</ChapterScene>
+      <div className="s-body chapter-tail">{projects.slice(1)}</div>
+    </section>
   );
 };
 
 const Experience = ({ language }) => {
   const copy = COPY[language];
-  return (
-  <section className="s" id="experience">
-    <SectionHead title={copy.sections.experience} />
-    <div className="s-body">
-      <div>
-        {EXPERIENCE.map((e, i) => (
-          <article className="exp" key={i}>
-            <div className="exp-when">{localize(e, "when", language)}</div>
-            <div className="exp-body">
-              <div className="exp-title-row">
-                <h3>{localize(e, "title", language)}</h3>
-                {e.tag && <span className="exp-tag">{localize(e, "tag", language)}</span>}
-              </div>
-              <p className="where">{localize(e, "where", language)}</p>
-              <p>{localize(e, "blurb", language)}</p>
-            </div>
-          </article>
-        ))}
+  const roles = EXPERIENCE.map((e) => (
+    <article className="exp" key={e.title}>
+      <div className="exp-when">{localize(e, "when", language)}</div>
+      <div className="exp-body">
+        <div className="exp-title-row">
+          <h3>{localize(e, "title", language)}</h3>
+          {e.tag && <span className="exp-tag">{localize(e, "tag", language)}</span>}
+        </div>
+        <p className="where" data-reveal="1">{localize(e, "where", language)}</p>
+        <p data-reveal="3">{localize(e, "blurb", language)}</p>
       </div>
-    </div>
-  </section>
+    </article>
+  ));
+  return (
+    <section className="s" id="experience">
+      <ChapterScene title={copy.sections.experience}>{roles[0]}</ChapterScene>
+      <div className="s-body chapter-tail">{roles.slice(1)}</div>
+    </section>
   );
 };
 
 const Education = ({ language }) => {
   const copy = COPY[language];
   return (
-  <section className="s" id="education">
-    <SectionHead title={copy.sections.education} />
-    <div className="s-body">
-      <div>
+    <section className="s" id="education">
+      <ChapterScene title={copy.sections.education}>
         {EDUCATION.map((e, i) => (
-          <article className="edu" key={i}>
+          <article className="edu" key={e.degree + e.when} data-reveal={i + 1}>
             <div className="exp-when">{localize(e, "when", language)}</div>
             <div className="exp-body">
               <h3>{localize(e, "degree", language)}</h3>
@@ -708,57 +705,54 @@ const Education = ({ language }) => {
             </div>
           </article>
         ))}
-      </div>
-    </div>
-  </section>
+      </ChapterScene>
+    </section>
   );
 };
 
 const Awards = ({ language }) => {
   const copy = COPY[language];
+  const awards = AWARDS.map((a, i) => (
+    <li className="award" key={i} data-reveal={i < 3 ? i + 1 : undefined}>
+      <span className="y">{a.year}</span>
+      <span className="t">{localize(a, "text", language)}</span>
+    </li>
+  ));
   return (
-  <section className="s" id="awards">
-    <SectionHead title={copy.sections.awards} />
-    <div className="s-body">
-      <ul className="award-list">
-        {AWARDS.map((a, i) => (
-          <li className="award" key={i}>
-            <span className="y">{a.year}</span>
-            <span className="t">{localize(a, "text", language)}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
+    <section className="s" id="awards">
+      <ChapterScene title={copy.sections.awards}>
+        <ul className="award-list">{awards.slice(0, 3)}</ul>
+      </ChapterScene>
+      <ul className="award-list chapter-tail">{awards.slice(3)}</ul>
+    </section>
   );
 };
 
 const Contact = ({ language }) => {
   const copy = COPY[language];
   return (
-  <section className="s" id="contact">
-    <SectionHead title={copy.sections.contact} />
-    <div className="s-body">
-      <div className="contact-grid">
-        <a className="contact-cell" href="mailto:c.jiu@wustl.edu">
-          <span className="label">{copy.email}</span>
-          <span className="value">c.jiu@wustl.edu <span className="arrow">↗</span></span>
-        </a>
-        <a className="contact-cell" href="https://github.com/JiuChen0" target="_blank" rel="noopener">
-          <span className="label">GitHub</span>
-          <span className="value">@JiuChen0 <span className="arrow">↗</span></span>
-        </a>
-        <a className="contact-cell" href="https://www.linkedin.com/in/jiuchen" target="_blank" rel="noopener">
-          <span className="label">LinkedIn</span>
-          <span className="value">in/jiuchen <span className="arrow">↗</span></span>
-        </a>
-        <a className="contact-cell" href="https://arxiv.org/abs/2604.21072" target="_blank" rel="noopener">
-          <span className="label">arXiv</span>
-          <span className="value">2604.21072 <span className="arrow">↗</span></span>
-        </a>
-      </div>
-    </div>
-  </section>
+    <section className="s" id="contact">
+      <ChapterScene title={copy.sections.contact}>
+        <div className="contact-grid">
+          <a className="contact-cell" data-reveal="1" href="mailto:c.jiu@wustl.edu">
+            <span className="label">{copy.email}</span>
+            <span className="value">c.jiu@wustl.edu <span className="arrow">↗</span></span>
+          </a>
+          <a className="contact-cell" data-reveal="2" href="https://github.com/JiuChen0" target="_blank" rel="noopener">
+            <span className="label">GitHub</span>
+            <span className="value">@JiuChen0 <span className="arrow">↗</span></span>
+          </a>
+          <a className="contact-cell" data-reveal="3" href="https://www.linkedin.com/in/jiuchen" target="_blank" rel="noopener">
+            <span className="label">LinkedIn</span>
+            <span className="value">in/jiuchen <span className="arrow">↗</span></span>
+          </a>
+          <a className="contact-cell" data-reveal="4" href="https://arxiv.org/abs/2604.21072" target="_blank" rel="noopener">
+            <span className="label">arXiv</span>
+            <span className="value">2604.21072 <span className="arrow">↗</span></span>
+          </a>
+        </div>
+      </ChapterScene>
+    </section>
   );
 };
 

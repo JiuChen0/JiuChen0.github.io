@@ -1,0 +1,79 @@
+.scroll-scene {
+  --scene-progress: 0;
+  --scene-runway: clamp(138px, 22svh, 206px);
+  --scene-top: max(var(--controls-clearance), min(14svh, 112px));
+}
+
+.scroll-scene__frame { top: var(--scene-top); }
+
+.scroll-scene[data-scroll-enabled] > .scroll-scene__frame {
+  position: sticky;
+  background: var(--bg);
+}
+
+.scroll-scene[data-scroll-enabled]::after {
+  display: block;
+  height: var(--scene-runway);
+  content: "";
+}
+
+.chapter-tail > :first-child { border-top: 0; }
+
+.chapter-scene .s-title { position: relative; }
+.chapter-scene[data-scroll-enabled] .s-title::after {
+  position: absolute;
+  inset: auto auto -8px 0;
+  width: clamp(35px, 9%, 72px);
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(var(--scene-progress));
+  transform-origin: left;
+  content: "";
+}
+
+.chapter-scene [data-reveal="1"] { --reveal-start: .05; }
+.chapter-scene [data-reveal="2"] { --reveal-start: .25; }
+.chapter-scene [data-reveal="3"] { --reveal-start: .43; }
+.chapter-scene [data-reveal="4"] { --reveal-start: .68; }
+
+.chapter-scene[data-scroll-enabled] [data-reveal] {
+  --revealed: clamp(0, calc((var(--scene-progress) - var(--reveal-start)) * 3.25), 1);
+  opacity: calc(.76 + var(--revealed) * .24);
+  transform: translateY(calc(12px * (1 - var(--revealed))));
+}
+
+.chapter-scene[data-scroll-enabled] [data-reveal]:focus-within {
+  opacity: 1;
+  transform: none;
+}
+
+.chapter-scene[data-scroll-enabled] .edu-watermark,
+.chapter-scene[data-scroll-enabled] .proj-anim {
+  opacity: calc(.48 + var(--revealed) * .52);
+}
+
+.chapter-scene[data-scroll-enabled] .bb-act {
+  animation-delay: calc(var(--bb-hop) * 1.5s - var(--scene-progress) * 6.2s);
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+  animation-play-state: paused;
+}
+
+.chapter-scene[data-scroll-enabled] .bb-busy { animation-play-state: paused; }
+
+@media (max-width: 640px) {
+  .chapter-scene { --scene-runway: clamp(122px, 21svh, 175px); }
+}
+
+/* Give the closing scene room to complete before the end of the document. */
+#contact .scroll-scene__frame {
+  min-height: max(0px, calc(100svh - var(--scene-top) - 128px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-scene[data-scroll-enabled] > .scroll-scene__frame { position: static; }
+  .scroll-scene[data-scroll-enabled]::after { display: none; }
+  .chapter-scene[data-scroll-enabled] [data-reveal],
+  .chapter-scene[data-scroll-enabled] .s-title::after { opacity: 1; transform: none; }
+  #contact .scroll-scene__frame { min-height: 0; }
+}

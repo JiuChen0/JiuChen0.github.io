@@ -34,7 +34,11 @@ const BloomBeeAnim = () => {
             0%, 100% { opacity: 0.35; }
             50%      { opacity: 1; }
           }
-          .bb-act { offset-rotate: 0deg; animation: bb-act 3.2s linear infinite; }
+          .bb-act {
+            offset-rotate: 0deg;
+            animation: bb-act 3.2s linear infinite;
+            animation-delay: calc(var(--bb-hop) * -.8s);
+          }
         `}</style>
       </defs>
 
@@ -59,7 +63,7 @@ const BloomBeeAnim = () => {
               className="bb-act"
               x="-4" y="-2.5" width="8" height="5" rx="1.5"
               fill="var(--accent)"
-              style={{ offsetPath: `path("${d}")`, animationDelay: `${-i * 0.8}s` }}
+              style={{ offsetPath: `path("${d}")`, "--bb-hop": i }}
             />
           </g>
         );
@@ -78,6 +82,7 @@ const BloomBeeAnim = () => {
             x={xs[i] - BOX_W / 2 + 5} y={BASE_Y + BOX_H / 2 - 4}
             width={BOX_W - 10} height="1.5"
             fill="var(--accent)"
+            className="bb-busy"
             style={{ animation: `bb-blink 1.6s ease-in-out ${i * 0.25}s infinite` }}
           />
           {/* layer-range label */}
