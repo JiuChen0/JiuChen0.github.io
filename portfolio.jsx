@@ -533,21 +533,16 @@ const Cover = ({ language, onLanguageChange }) => {
 
 const SectionHead = ({ title }) => <h2 className="s-title">{title}</h2>;
 
-const ChapterScene = ({ title, children }) => (
-  <ScrollScene className="chapter-scene">
-    <SectionHead title={title} />
-    <div className="s-body">{children}</div>
-  </ScrollScene>
-);
-
 const About = ({ language }) => {
   const copy = COPY[language];
   return (
     <section className="s" id="about">
-      <ChapterScene title={copy.sections.about}>
-        <p className="lead">{copy.aboutLead}</p>
-        <p data-reveal="2">{copy.aboutBody}</p>
-      </ChapterScene>
+      <ChapterSequence title={copy.sections.about}>
+        <div className="s-body">
+          <p className="lead" data-chapter-row><span data-reveal="1">{copy.aboutLead}</span></p>
+          <p data-chapter-row><span data-reveal="1">{copy.aboutBody}</span></p>
+        </div>
+      </ChapterSequence>
     </section>
   );
 };
@@ -561,26 +556,26 @@ const Research = ({ language, showAnim }) => {
     </>
   );
   return (
-  <section className="s" id="research">
-    {showAnim ? <ResearchStory language={language}>{introduction}</ResearchStory> : introduction}
-    <div className="s-body">
-      <div className="research-grid">
-        {RESEARCH.map((r) => (
-          <div key={r.title} className="research-cell">
-            <h3>{localize(r, "title", language)}</h3>
-            <p>{localize(r, "blurb", language)}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+    <section className="s" id="research">
+      {showAnim ? <ResearchStory language={language}>{introduction}</ResearchStory> : introduction}
+      <ChapterSequence>
+        <div className="s-body research-grid">
+          {RESEARCH.map((r) => (
+            <div className="research-cell" key={r.title} data-chapter-row>
+              <h3 data-reveal="1">{localize(r, "title", language)}</h3>
+              <p data-reveal="2">{localize(r, "blurb", language)}</p>
+            </div>
+          ))}
+        </div>
+      </ChapterSequence>
+    </section>
   );
 };
 
 const Publications = ({ language }) => {
   const copy = COPY[language];
   const papers = PUBLICATIONS.map((p) => (
-    <article className="pub" key={p.title}>
+    <article className="pub" key={p.title} data-chapter-row>
       <div className="pub-meta">
         <span className="y">{p.year}</span>
         <span>{localize(p, "venue", language)}</span>
@@ -607,14 +602,15 @@ const Publications = ({ language }) => {
   ));
   return (
     <section className="s" id="publications">
-      <ChapterScene title={copy.sections.publications}>
-        <p className="publication-note">
-          {copy.authorNote}
-          <span style={{ marginLeft: 8 }}>(<sup style={{ color: "var(--accent)" }}>*</sup> {copy.equalContribution})</span>
-        </p>
-        {papers[0]}
-      </ChapterScene>
-      {papers.length > 1 && <div className="s-body">{papers.slice(1)}</div>}
+      <ChapterSequence title={copy.sections.publications}>
+        <div className="s-body">
+          <p className="publication-note">
+            {copy.authorNote}
+            <span style={{ marginLeft: 8 }}>(<sup style={{ color: "var(--accent)" }}>*</sup> {copy.equalContribution})</span>
+          </p>
+          {papers}
+        </div>
+      </ChapterSequence>
     </section>
   );
 };
@@ -624,7 +620,7 @@ const Projects = ({ language }) => {
   const projects = PROJECTS.map((p) => {
     const Anim = window.PROJECT_ANIMS && window.PROJECT_ANIMS[p.anim];
     return (
-      <article className="proj" key={p.title}>
+      <article className="proj" key={p.title} data-chapter-row>
         <div className="proj-text">
           <div className="proj-head">
             <h3>{localize(p, "title", language)}</h3>
@@ -642,7 +638,7 @@ const Projects = ({ language }) => {
           )}
         </div>
         {Anim && (
-          <div className="proj-anim" aria-hidden="true" data-reveal="1">
+          <div className="proj-anim" aria-hidden="true">
             <Anim />
           </div>
         )}
@@ -651,8 +647,9 @@ const Projects = ({ language }) => {
   });
   return (
     <section className="s" id="projects">
-      <ChapterScene title={copy.sections.projects}>{projects[0]}</ChapterScene>
-      <div className="s-body chapter-tail">{projects.slice(1)}</div>
+      <ChapterSequence title={copy.sections.projects}>
+        <div className="s-body">{projects}</div>
+      </ChapterSequence>
     </section>
   );
 };
@@ -660,7 +657,7 @@ const Projects = ({ language }) => {
 const Experience = ({ language }) => {
   const copy = COPY[language];
   const roles = EXPERIENCE.map((e) => (
-    <article className="exp" key={e.title}>
+    <article className="exp" key={e.title} data-chapter-row>
       <div className="exp-when">{localize(e, "when", language)}</div>
       <div className="exp-body">
         <div className="exp-title-row">
@@ -674,8 +671,9 @@ const Experience = ({ language }) => {
   ));
   return (
     <section className="s" id="experience">
-      <ChapterScene title={copy.sections.experience}>{roles[0]}</ChapterScene>
-      <div className="s-body chapter-tail">{roles.slice(1)}</div>
+      <ChapterSequence title={copy.sections.experience}>
+        <div className="s-body">{roles}</div>
+      </ChapterSequence>
     </section>
   );
 };
@@ -684,28 +682,30 @@ const Education = ({ language }) => {
   const copy = COPY[language];
   return (
     <section className="s" id="education">
-      <ChapterScene title={copy.sections.education}>
-        {EDUCATION.map((e, i) => (
-          <article className="edu" key={e.degree + e.when} data-reveal={i + 1}>
-            <div className="exp-when">{localize(e, "when", language)}</div>
-            <div className="exp-body">
-              <h3>{localize(e, "degree", language)}</h3>
-              <p className="where" style={{ marginBottom: 0 }}>{localize(e, "where", language)}</p>
-            </div>
-            <div className="edu-watermark" aria-hidden="true">
-              {e.watermark.kind === "img" && (
-                <img src={e.watermark.src} alt="" />
-              )}
-              {e.watermark.kind === "glyph" && (
-                <span className="glyph">{e.watermark.char}</span>
-              )}
-              {e.watermark.kind === "glyph-cjk" && (
-                <span className="glyph-cjk">{e.watermark.char}</span>
-              )}
-            </div>
-          </article>
-        ))}
-      </ChapterScene>
+      <ChapterSequence title={copy.sections.education}>
+        <div className="s-body">
+          {EDUCATION.map((e) => (
+            <article className="edu" key={e.degree + e.when} data-chapter-row>
+              <div className="exp-when">{localize(e, "when", language)}</div>
+              <div className="exp-body">
+                <h3>{localize(e, "degree", language)}</h3>
+                <p className="where" data-reveal="2" style={{ marginBottom: 0 }}>{localize(e, "where", language)}</p>
+              </div>
+              <div className="edu-watermark" aria-hidden="true" data-reveal="3">
+                {e.watermark.kind === "img" && (
+                  <img src={e.watermark.src} alt="" />
+                )}
+                {e.watermark.kind === "glyph" && (
+                  <span className="glyph">{e.watermark.char}</span>
+                )}
+                {e.watermark.kind === "glyph-cjk" && (
+                  <span className="glyph-cjk">{e.watermark.char}</span>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </ChapterSequence>
     </section>
   );
 };
@@ -713,17 +713,16 @@ const Education = ({ language }) => {
 const Awards = ({ language }) => {
   const copy = COPY[language];
   const awards = AWARDS.map((a, i) => (
-    <li className="award" key={i} data-reveal={i < 3 ? i + 1 : undefined}>
-      <span className="y">{a.year}</span>
-      <span className="t">{localize(a, "text", language)}</span>
+    <li className="award" key={i} data-chapter-row>
+      <span className="y" data-reveal="1">{a.year}</span>
+      <span className="t" data-reveal="2">{localize(a, "text", language)}</span>
     </li>
   ));
   return (
     <section className="s" id="awards">
-      <ChapterScene title={copy.sections.awards}>
-        <ul className="award-list">{awards.slice(0, 3)}</ul>
-      </ChapterScene>
-      <ul className="award-list chapter-tail">{awards.slice(3)}</ul>
+      <ChapterSequence title={copy.sections.awards}>
+        <ul className="award-list">{awards}</ul>
+      </ChapterSequence>
     </section>
   );
 };
@@ -732,26 +731,26 @@ const Contact = ({ language }) => {
   const copy = COPY[language];
   return (
     <section className="s" id="contact">
-      <ChapterScene title={copy.sections.contact}>
+      <ChapterSequence title={copy.sections.contact}>
         <div className="contact-grid">
-          <a className="contact-cell" data-reveal="1" href="mailto:c.jiu@wustl.edu">
+          <a className="contact-cell" data-chapter-row href="mailto:c.jiu@wustl.edu">
             <span className="label">{copy.email}</span>
-            <span className="value">c.jiu@wustl.edu <span className="arrow">↗</span></span>
+            <span className="value" data-reveal="2">c.jiu@wustl.edu <span className="arrow">↗</span></span>
           </a>
-          <a className="contact-cell" data-reveal="2" href="https://github.com/JiuChen0" target="_blank" rel="noopener">
+          <a className="contact-cell" data-chapter-row href="https://github.com/JiuChen0" target="_blank" rel="noopener">
             <span className="label">GitHub</span>
-            <span className="value">@JiuChen0 <span className="arrow">↗</span></span>
+            <span className="value" data-reveal="2">@JiuChen0 <span className="arrow">↗</span></span>
           </a>
-          <a className="contact-cell" data-reveal="3" href="https://www.linkedin.com/in/jiuchen" target="_blank" rel="noopener">
+          <a className="contact-cell" data-chapter-row href="https://www.linkedin.com/in/jiuchen" target="_blank" rel="noopener">
             <span className="label">LinkedIn</span>
-            <span className="value">in/jiuchen <span className="arrow">↗</span></span>
+            <span className="value" data-reveal="2">in/jiuchen <span className="arrow">↗</span></span>
           </a>
-          <a className="contact-cell" data-reveal="4" href="https://arxiv.org/abs/2604.21072" target="_blank" rel="noopener">
+          <a className="contact-cell" data-chapter-row href="https://arxiv.org/abs/2604.21072" target="_blank" rel="noopener">
             <span className="label">arXiv</span>
-            <span className="value">2604.21072 <span className="arrow">↗</span></span>
+            <span className="value" data-reveal="2">2604.21072 <span className="arrow">↗</span></span>
           </a>
         </div>
-      </ChapterScene>
+      </ChapterSequence>
     </section>
   );
 };
@@ -811,17 +810,6 @@ const App = () => {
   }, [theme, tweaks.accent]);
 
   useEffect(() => window.siteThemePreference?.subscribe(setTheme), []);
-
-  useEffect(() => {
-    if (!window.IntersectionObserver) return;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(({ target, isIntersecting }) => {
-        target.toggleAttribute("data-motion-paused", !isIntersecting);
-      });
-    });
-    document.querySelectorAll(".proj-anim").forEach((figure) => observer.observe(figure));
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     const copy = COPY[language];
