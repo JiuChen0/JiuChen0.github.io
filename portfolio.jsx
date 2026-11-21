@@ -548,12 +548,16 @@ const About = ({ language }) => {
 
 const Research = ({ language, showAnim }) => {
   const copy = COPY[language];
+  const introduction = (
+    <>
+      <SectionHead title={copy.sections.research} />
+      <div className="s-body"><p className="lead">{copy.researchLead}</p></div>
+    </>
+  );
   return (
   <section className="s" id="research">
-    <SectionHead title={copy.sections.research} />
+    {showAnim ? <ResearchStory language={language}>{introduction}</ResearchStory> : introduction}
     <div className="s-body">
-      <p className="lead">{copy.researchLead}</p>
-      {showAnim && <HeroDiagram language={language} />}
       <div className="research-grid">
         {RESEARCH.map((r) => (
           <div key={r.title} className="research-cell">
@@ -821,9 +825,9 @@ const App = () => {
         target.toggleAttribute("data-motion-paused", !isIntersecting);
       });
     });
-    document.querySelectorAll(".hero-anim, .proj-anim").forEach((figure) => observer.observe(figure));
+    document.querySelectorAll(".proj-anim").forEach((figure) => observer.observe(figure));
     return () => observer.disconnect();
-  }, [tweaks.showHeroAnim]);
+  }, []);
 
   useEffect(() => {
     const copy = COPY[language];

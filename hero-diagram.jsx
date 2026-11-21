@@ -1,161 +1,194 @@
-/* A workload distributed across four parallel processes. */
+/* Scroll through the work distribution, rank communication, and result collection. */
 
-const HeroDiagram = ({ language = "en" }) => {
-  const width = 720;
-  const height = 180;
-  const center = 360;
-  const inputX = 76;
-  const outputX = width - inputX;
-  const middle = height / 2;
-  const ranks = [24, 68, 112, 156];
-  const labels = language === "zh"
-    ? {
-        caption: "并行计算与进程间通信",
-        input: "任务输入",
-        output: "汇总结果",
-        note: "任务分给四个进程处理。虚线表示进程间的通信。",
+const STORY_LABELS = {
+  en: {
+    caption: "Parallel computation and communication",
+    input: "Workload",
+    output: "Results",
+    steps: ["Dispatch work", "Exchange data", "Gather results"],
+    note: "A workload is split across four ranks. They exchange data before the results are gathered.",
+  },
+  zh: {
+    caption: "并行计算与进程间通信",
+    input: "任务输入",
+    output: "汇总结果",
+    steps: ["分发任务", "交换数据", "汇总结果"],
+    note: "任务分给四个进程。各进程在计算时交换数据，最后汇总结果。",
+  },
+};
+
+const NETWORK_WIDTH = 720;
+const NETWORK_HEIGHT = 180;
+const NETWORK_CENTER = 360;
+const NETWORK_INPUT = 94;
+const NETWORK_OUTPUT = NETWORK_WIDTH - NETWORK_INPUT;
+const NETWORK_MIDDLE = 90;
+const NETWORK_RANKS = [22, 67, 113, 158];
+
+const terminalPosition = (x, y) => ({
+  left: `${100 * x / NETWORK_WIDTH}%`,
+  top: `${100 * y / NETWORK_HEIGHT}%`,
+});
+
+const dispatchPath = (y) =>
+  `M ${NETWORK_INPUT} ${NETWORK_MIDDLE} C 174 ${NETWORK_MIDDLE}, 238 ${y}, ${NETWORK_CENTER} ${y}`;
+const gatherPath = (y) =>
+  `M ${NETWORK_CENTER} ${y} C 482 ${y}, 546 ${NETWORK_MIDDLE}, ${NETWORK_OUTPUT} ${NETWORK_MIDDLE}`;
+const clampProgress = (value) => Math.min(1, Math.max(0, value));
+
+const ResearchStory = ({ language, children }) => {
+  const storyRef = React.useRef(null);
+  const sceneRef = React.useRef(null);
+  const labels = STORY_LABELS[language];
+
+  React.useLayoutEffect(() => {
+    const story = storyRef.current;
+    const scene = sceneRef.current;
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    const get = (name) => [...scene.querySelectorAll(`[data-network="${name}"]`)];
+    const trace = (name) => get(name).map(path => ({ path, length: path.getTotalLength() }));
+    const left = trace("dispatch");
+    const right = trace("gather");
+    const dots = get("rank-dot");
+    const exchanges = get("exchange-dot");
+    let enabled = false;
+    let distance = 0;
+    let stickyTop = 0;
+    let progress = 0;
+    let lastTime = 0;
+    let frame = 0;
+
+    const target = () => {
+      const entry = 44;
+      return clampProgress((stickyTop + entry - story.getBoundingClientRect().top) / (distance + entry));
+    };
+
+    const move = (dot, position, visibility) => {
+      dot.setAttribute("cx", position.x);
+      dot.setAttribute("cy", position.y);
+      dot.setAttribute("opacity", visibility);
+    };
+
+    const fade = (part) => Math.min(1, part * 12, (1 - part) * 12);
+
+    const paint = () => {
+      const dispatch = clampProgress(progress * 3);
+      const exchange = clampProgress(progress * 3 - 1);
+      const gather = clampProgress(progress * 3 - 2);
+      const step = Math.min(2, Math.floor(progress * 3));
+      story.dataset.step = step;
+      story.style.setProperty("--research-dispatch", dispatch);
+      story.style.setProperty("--research-exchange", exchange);
+      story.style.setProperty("--research-gather", gather);
+
+      const receiving = step === 0;
+      const lanes = receiving ? left : right;
+      const travel = receiving ? dispatch : gather;
+      dots.forEach((dot, i) => {
+        const lane = lanes[i];
+        const part = clampProgress((travel - i * .04) / .88);
+        move(dot, lane.path.getPointAtLength(part * lane.length), fade(part));
+      });
+
+      const first = NETWORK_RANKS[0];
+      const last = NETWORK_RANKS[NETWORK_RANKS.length - 1];
+      exchanges.forEach((dot, index) => {
+        move(dot, {
+          x: NETWORK_CENTER,
+          y: index ? last - (last - first) * exchange : first + (last - first) * exchange,
+        }, fade(exchange));
+      });
+    };
+
+    const tick = (now) => {
+      frame = 0;
+      const next = target();
+      const elapsed = lastTime ? now - lastTime : 16;
+      progress += (next - progress) * (1 - Math.exp(-elapsed / 48));
+      if (Math.abs(next - progress) < .003) {
+        progress = next;
+        lastTime = 0;
+      } else {
+        lastTime = now;
+        frame = requestAnimationFrame(tick);
       }
-    : {
-        caption: "Parallel computation and communication",
-        input: "Workload",
-        output: "Results",
-        note: "Work is split across four ranks. Dashed lines mark communication between ranks.",
-      };
+      paint();
+    };
 
-  const position = (x, y) => ({ left: `${100 * x / width}%`, top: `${100 * y / height}%` });
-  const laneFor = (y) =>
-    `M ${inputX} ${middle} C 178 ${middle}, 225 ${y}, ${center - 32} ${y}
-     H ${center + 32} C 495 ${y}, 542 ${middle}, ${outputX} ${middle}`;
+    const onScroll = () => {
+      if (!enabled || frame || progress === target()) return;
+      frame = requestAnimationFrame(tick);
+    };
+
+    const measure = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      lastTime = 0;
+      const nextTop = Math.max(parseFloat(getComputedStyle(scene).top) || 0, 0);
+      enabled = !motion.matches && scene.offsetHeight + nextTop + 24 <= window.innerHeight;
+      story.toggleAttribute("data-scroll-enabled", enabled);
+      if (enabled) {
+        stickyTop = nextTop;
+        distance = story.offsetHeight - scene.offsetHeight;
+        progress = target();
+        paint();
+      }
+    };
+
+    measure();
+    const size = new ResizeObserver(measure);
+    size.observe(scene);
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    motion.addEventListener("change", measure);
+    return () => {
+      cancelAnimationFrame(frame);
+      size.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", onScroll);
+      motion.removeEventListener("change", measure);
+    };
+  }, [language]);
 
   return (
-    <figure className="hero-anim">
-      <style>{`
-        .hero-anim {
-          margin: 32px 0 0;
-          padding: 20px;
-          border: 1px solid var(--rule);
-          border-radius: 12px;
-          background: color-mix(in srgb, var(--bg), var(--accent) 4%);
-        }
-        .hero-anim .hero-anim-head {
-          margin: 0 0 20px;
-          color: var(--ink);
-          font-weight: 500;
-          font-size: 14px;
-          line-height: 1.4;
-          letter-spacing: 0;
-          text-transform: none;
-        }
-        .hero-network {
-          position: relative;
-          block-size: 184px;
-          color: var(--ink-soft);
-          font: 400 12px/1.25 var(--mono);
-        }
-        .hero-network svg {
-          display: block;
-          width: 100%;
-          height: 100%;
-        }
-        .hero-rank, .hero-terminal {
-          position: absolute;
-          transform: translate(-50%, -50%);
-        }
-        .hero-rank {
-          min-width: 56px;
-          padding: 4px 6px;
-          border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--rule));
-          border-radius: 6px;
-          color: var(--ink);
-          background: var(--bg);
-          text-align: center;
-          white-space: nowrap;
-        }
-        .hero-terminal {
-          width: 8px;
-          height: 8px;
-          border: 1px solid var(--accent);
-          border-radius: 50%;
-          background: var(--bg);
-        }
-        .hero-terminal span {
-          position: absolute;
-          bottom: 12px;
-          left: 50%;
-          transform: translateX(-50%);
-          white-space: nowrap;
-        }
-        .hero-anim .hero-diagram-note {
-          margin: 12px 0 0;
-          color: var(--ink-mute);
-          font-size: 13px;
-          line-height: 1.5;
-        }
-        .hero-tok {
-          opacity: 0;
-          offset-rotate: 0deg;
-          animation: hero-flow 3.8s linear infinite;
-        }
-        .hero-anim[data-motion-paused] .hero-tok {
-          animation-play-state: paused;
-        }
-        @keyframes hero-flow {
-          0% { offset-distance: 0%; opacity: 0; }
-          12% { opacity: 1; }
-          82% { opacity: 1; }
-          100% { offset-distance: 100%; opacity: 0; }
-        }
-        @media (max-width: 640px) {
-          .hero-anim { margin-top: 24px; padding: 16px; }
-          .hero-network { block-size: 160px; font-size: 11px; }
-          .hero-rank { min-width: 48px; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .hero-tok { animation: none; }
-        }
-      `}</style>
-      <figcaption className="hero-anim-head">{labels.caption}</figcaption>
-      <div className="hero-network" aria-hidden="true">
-        <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
-          {ranks.map((y) => (
-            <path
-              key={y}
-              d={laneFor(y)}
-              fill="none"
-              stroke="var(--accent)"
-              strokeOpacity=".38"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-          <line
-            x1={center}
-            y1={ranks[0]}
-            x2={center}
-            y2={ranks[ranks.length - 1]}
-            stroke="var(--accent)"
-            strokeOpacity=".64"
-            strokeDasharray="3 4"
-            vectorEffect="non-scaling-stroke"
-          />
-          {ranks.map((y, i) => (
-            <circle
-              key={y}
-              r="3"
-              fill="var(--accent)"
-              className="hero-tok"
-              style={{ offsetPath: `path("${laneFor(y)}")`, animationDelay: `${i * -950}ms` }}
-            />
-          ))}
-        </svg>
-        <span className="hero-terminal" style={position(inputX, middle)}><span>{labels.input}</span></span>
-        {ranks.map((y, i) => (
-          <span key={y} className="hero-rank" style={position(center, y)}>rank {i}</span>
-        ))}
-        <span className="hero-terminal" style={position(outputX, middle)}><span>{labels.output}</span></span>
+    <div className="research-story" ref={storyRef}>
+      <div className="research-scene" ref={sceneRef}>
+        {children}
+        <figure className="research-diagram">
+          <figcaption>{labels.caption}</figcaption>
+          <div className="research-network" aria-hidden="true">
+            <svg viewBox={`0 0 ${NETWORK_WIDTH} ${NETWORK_HEIGHT}`} preserveAspectRatio="none">
+              {NETWORK_RANKS.map((y) => (
+                <g key={y}>
+                  <path className="research-lane" d={dispatchPath(y) + " " + gatherPath(y)} />
+                  <path className="research-dispatch" data-network="dispatch" d={dispatchPath(y)} pathLength="1" />
+                  <path className="research-gather" data-network="gather" d={gatherPath(y)} pathLength="1" />
+                </g>
+              ))}
+              <line className="research-exchange" x1={NETWORK_CENTER} y1={NETWORK_RANKS[0]}
+                x2={NETWORK_CENTER} y2={NETWORK_RANKS[NETWORK_RANKS.length - 1]} />
+              {NETWORK_RANKS.map((y) => <ellipse className="research-packet" key={y} data-network="rank-dot" />)}
+              <ellipse className="research-packet" data-network="exchange-dot" />
+              <ellipse className="research-packet" data-network="exchange-dot" />
+            </svg>
+            <span className="research-terminal research-input" style={terminalPosition(NETWORK_INPUT, NETWORK_MIDDLE)}>
+              <span>{labels.input}</span>
+            </span>
+            {NETWORK_RANKS.map((y, i) => (
+              <span key={y} className="research-rank" style={terminalPosition(NETWORK_CENTER, y)}>rank {i}</span>
+            ))}
+            <span className="research-terminal research-output" style={terminalPosition(NETWORK_OUTPUT, NETWORK_MIDDLE)}>
+              <span>{labels.output}</span>
+            </span>
+          </div>
+          <ol className="research-steps" aria-hidden="true">
+            {labels.steps.map((label) => <li key={label}>{label}</li>)}
+          </ol>
+          <p className="research-diagram-note">{labels.note}</p>
+        </figure>
       </div>
-      <p className="hero-diagram-note">{labels.note}</p>
-    </figure>
+    </div>
   );
 };
 
-window.HeroDiagram = HeroDiagram;
+window.ResearchStory = ResearchStory;
