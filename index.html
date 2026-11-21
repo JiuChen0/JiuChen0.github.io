@@ -13,7 +13,7 @@
       }
     } catch (_) {}
   </script>
-  <link rel="stylesheet" href="theme-switch.css?v=20261121-2">
+  <link rel="stylesheet" href="theme-switch.css?v=20261121-3">
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
@@ -91,7 +91,7 @@
     .page {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 80px 56px 160px;
+      padding: max(80px, var(--controls-clearance)) 56px 160px;
       display: grid;
       grid-template-columns: 220px 1fr;
       gap: 96px;
@@ -100,7 +100,7 @@
     @media (max-width: 920px) {
       .page {
         grid-template-columns: 1fr;
-        padding: 40px 24px 96px;
+        padding: var(--controls-clearance) 24px 96px;
         gap: 48px;
       }
     }
@@ -108,7 +108,7 @@
     /* ---------- sticky rail ---------- */
     .rail {
       position: sticky;
-      top: 56px;
+      top: var(--controls-clearance);
       align-self: start;
       display: flex;
       flex-direction: column;
@@ -123,7 +123,6 @@
         align-items: center;
       }
       .rail-mark { min-width: 0; }
-      .appearance-controls { justify-self: end; }
       .rail-contents { grid-column: 1 / -1; }
       .rail .rail-nav {
         flex-direction: row;
@@ -142,9 +141,6 @@
         text-align: right;
       }
     }
-    @media (max-width: 380px) {
-      .appearance-controls { grid-column: 1 / -1; justify-self: start; }
-    }
 
     .rail-mark {
       display: flex;
@@ -162,41 +158,6 @@
       background: var(--bg-soft);
       box-shadow: 0 0 0 1px var(--rule), 0 1px 2px rgba(0,0,0,0.04);
       display: block;
-    }
-
-    .language-switch {
-      display: inline-flex;
-      align-self: flex-start;
-      gap: 2px;
-      padding: 3px;
-      background: var(--bg-soft);
-      border: 1px solid var(--rule);
-      border-radius: 999px;
-    }
-    .language-switch button {
-      appearance: none;
-      border: 0;
-      border-radius: 999px;
-      background: transparent;
-      color: var(--ink-mute);
-      cursor: pointer;
-      font: inherit;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1;
-      min-width: 42px;
-      padding: 7px 10px;
-      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-    }
-    .language-switch button:hover { color: var(--ink); }
-    .language-switch button.active {
-      background: var(--bg);
-      color: var(--ink);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.10);
-    }
-    .language-switch button:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
     }
 
     .rail-block-label {
@@ -341,7 +302,7 @@
     section.s {
       padding-top: 80px;
       padding-bottom: 24px;
-      scroll-margin-top: 32px;
+      scroll-margin-top: var(--controls-clearance);
     }
 
     .s-eyebrow {
@@ -818,6 +779,6 @@
   <script type="text/babel" src="hero-diagram.jsx"></script>
   <script type="text/babel" src="project-animations.jsx"></script>
   <script type="text/babel" src="experience-animations.jsx"></script>
-  <script type="text/babel" src="portfolio.jsx?v=20261121-2"></script>
+  <script type="text/babel" src="portfolio.jsx?v=20261121-3"></script>
 </body>
 </html>

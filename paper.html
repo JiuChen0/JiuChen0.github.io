@@ -13,7 +13,7 @@
       }
     } catch (_) {}
   </script>
-  <link rel="stylesheet" href="theme-switch.css?v=20261121-2">
+  <link rel="stylesheet" href="theme-switch.css?v=20261121-3">
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -84,7 +84,7 @@
     .page {
       max-width: 1180px;
       margin: 0 auto;
-      padding: 56px 48px 120px;
+      padding: var(--controls-clearance) 48px 120px;
       display: grid;
       grid-template-columns: 220px 1fr;
       gap: 64px;
@@ -93,7 +93,7 @@
     @media (max-width: 880px) {
       .page {
         grid-template-columns: 1fr;
-        padding: 32px 24px 80px;
+        padding: var(--controls-clearance) 24px 80px;
         gap: 32px;
       }
     }
@@ -101,7 +101,7 @@
     /* ---------- sticky rail ---------- */
     .rail {
       position: sticky;
-      top: 56px;
+      top: var(--controls-clearance);
       align-self: start;
       display: flex;
       flex-direction: column;
@@ -125,40 +125,6 @@
       line-height: 1;
     }
 
-    .language-switch {
-      display: inline-flex;
-      align-self: flex-start;
-      gap: 2px;
-      padding: 3px;
-      background: var(--bg-soft);
-      border: 1px solid var(--rule);
-      border-radius: 999px;
-    }
-    .language-switch button {
-      appearance: none;
-      border: 0;
-      border-radius: 999px;
-      background: transparent;
-      color: var(--ink-mute);
-      cursor: pointer;
-      font: inherit;
-      font-size: 10.5px;
-      font-weight: 600;
-      line-height: 1;
-      min-width: 40px;
-      padding: 7px 9px;
-      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-    }
-    .language-switch button:hover { color: var(--ink); }
-    .language-switch button.active {
-      background: var(--bg);
-      color: var(--ink);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.10);
-    }
-    .language-switch button:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
     .rail-mark .dot {
       display: inline-block;
       width: 6px; height: 6px;
@@ -281,7 +247,7 @@
     section.s {
       padding-top: 8px;
       padding-bottom: 64px;
-      scroll-margin-top: 32px;
+      scroll-margin-top: var(--controls-clearance);
     }
     section.s + section.s { border-top: 1px solid var(--rule); padding-top: 56px; }
 
@@ -638,6 +604,6 @@
 
   <script type="text/babel" src="tweaks-panel.jsx"></script>
   <script type="text/babel" src="hero-diagram.jsx"></script>
-  <script type="text/babel" src="portfolio.jsx?v=20261121-2"></script>
+  <script type="text/babel" src="portfolio.jsx?v=20261121-3"></script>
 </body>
 </html>

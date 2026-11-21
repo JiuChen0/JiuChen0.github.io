@@ -343,13 +343,13 @@ const useActiveSection = (ids) => {
   return active;
 };
 
-// ---------- rail ----------
+// ---------- site controls ----------
 
 const LanguageSwitch = ({ language, onChange }) => (
-  <div className="language-switch" role="group" aria-label={COPY[language].languageLabel}>
+  <div className="language-switch" data-language={language} role="group" aria-label={COPY[language].languageLabel}>
     <button
       type="button"
-      className={language === "en" ? "active" : ""}
+      lang="en"
       aria-pressed={language === "en"}
       onClick={() => onChange("en")}
     >
@@ -357,7 +357,7 @@ const LanguageSwitch = ({ language, onChange }) => (
     </button>
     <button
       type="button"
-      className={language === "zh" ? "active" : ""}
+      lang="zh-CN"
       aria-pressed={language === "zh"}
       onClick={() => onChange("zh")}
     >
@@ -386,22 +386,15 @@ const ThemeSwitch = ({ dark, label, onToggle }) => (
   </button>
 );
 
-const Rail = ({ active, language, onLanguageChange, theme, onThemeChange }) => {
+// ---------- rail ----------
+
+const Rail = ({ active, language }) => {
   const copy = COPY[language];
   return (
   <aside className="rail">
     <div className="rail-mark">
       <img className="avatar" src="assets/jiu-chen.jpg" alt="Jiu Chen" />
       <span>Jiu Chen</span>
-    </div>
-
-    <div className="appearance-controls">
-      <LanguageSwitch language={language} onChange={onLanguageChange} />
-      <ThemeSwitch
-        dark={theme === "dark"}
-        label={copy.themeLabel}
-        onToggle={() => onThemeChange(theme === "dark" ? "light" : "dark")}
-      />
     </div>
 
     <div className="rail-section rail-contents">
@@ -783,14 +776,16 @@ const App = () => {
 
   return (
     <>
-      <main className="page">
-        <Rail
-          active={active}
-          language={language}
-          onLanguageChange={setLanguage}
-          theme={tweaks.theme}
-          onThemeChange={changeTheme}
+      <div className="site-controls">
+        <LanguageSwitch language={language} onChange={setLanguage} />
+        <ThemeSwitch
+          dark={tweaks.theme === "dark"}
+          label={COPY[language].themeLabel}
+          onToggle={() => changeTheme(tweaks.theme === "dark" ? "light" : "dark")}
         />
+      </div>
+      <main className="page">
+        <Rail active={active} language={language} />
         <div className="content">
           <Hero showAnim={tweaks.showHeroAnim} language={language} />
           <About language={language} />
