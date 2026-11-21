@@ -347,13 +347,15 @@ const useActiveSection = (ids) => {
 
 const LanguageSwitch = ({ language, onChange }) => (
   <div className="language-switch" data-language={language} role="group" aria-label={COPY[language].languageLabel}>
+    <span className="language-switch__page" aria-hidden="true" />
     <button
       type="button"
       lang="en"
       aria-pressed={language === "en"}
       onClick={() => onChange("en")}
     >
-      EN
+      <span className="language-switch__glyph" aria-hidden="true">Aa</span>
+      <span>EN</span>
     </button>
     <button
       type="button"
@@ -361,7 +363,8 @@ const LanguageSwitch = ({ language, onChange }) => (
       aria-pressed={language === "zh"}
       onClick={() => onChange("zh")}
     >
-      中文
+      <span className="language-switch__glyph" aria-hidden="true">文</span>
+      <span>中文</span>
     </button>
   </div>
 );
@@ -388,7 +391,7 @@ const ThemeSwitch = ({ dark, label, onToggle }) => (
 
 // ---------- rail ----------
 
-const Rail = ({ active, language }) => {
+const Rail = ({ active, language, onLanguageChange }) => {
   const copy = COPY[language];
   return (
   <aside className="rail">
@@ -396,6 +399,8 @@ const Rail = ({ active, language }) => {
       <img className="avatar" src="assets/jiu-chen.jpg" alt="Jiu Chen" />
       <span>Jiu Chen</span>
     </div>
+
+    <LanguageSwitch language={language} onChange={onLanguageChange} />
 
     <div className="rail-section rail-contents">
       <div className="rail-block-label">{copy.contents}</div>
@@ -777,7 +782,6 @@ const App = () => {
   return (
     <>
       <div className="site-controls">
-        <LanguageSwitch language={language} onChange={setLanguage} />
         <ThemeSwitch
           dark={tweaks.theme === "dark"}
           label={COPY[language].themeLabel}
@@ -785,7 +789,7 @@ const App = () => {
         />
       </div>
       <main className="page">
-        <Rail active={active} language={language} />
+        <Rail active={active} language={language} onLanguageChange={setLanguage} />
         <div className="content">
           <Hero showAnim={tweaks.showHeroAnim} language={language} />
           <About language={language} />
