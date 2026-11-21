@@ -26,6 +26,10 @@
   gap: 10px;
 }
 
+.appearance-controls .language-switch {
+  align-self: center;
+}
+
 .theme-switch {
   --switch-width: 84px;
   --switch-height: 34px;
