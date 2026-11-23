@@ -419,7 +419,7 @@ const Rail = ({ active, language, onLanguageChange }) => {
 
 const Cover = ({ language, onLanguageChange, theme }) => {
   const copy = COPY[language];
-  const artwork = theme === "dark" ? "assets/confluence-dusk" : "assets/confluence-daylight";
+  const artwork = theme === "dark" ? "assets/coast-dusk" : "assets/coast-daylight";
   const [loadedArtwork, setLoadedArtwork] = useState(null);
   const coverRef = useRef(null);
   const frameRef = useRef(null);
