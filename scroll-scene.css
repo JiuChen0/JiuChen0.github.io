@@ -76,6 +76,15 @@
   animation-fill-mode: both;
 }
 
+@media (max-width: 920px) {
+  .chapter-sequence[data-sequence-ready] > .chapter-heading[data-pinned]::before {
+    z-index: -1;
+    inset: calc(-1 * var(--controls-clearance)) calc(-1 * var(--page-gutter)) -18px;
+    height: auto;
+    background: linear-gradient(var(--bg) calc(100% - 18px), transparent);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scroll-scene[data-scroll-enabled] > .scroll-scene__frame { position: static; }
   .scroll-scene[data-scroll-enabled]::after { display: none; }
