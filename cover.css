@@ -7,7 +7,6 @@
   --cover-sky: #cee2f2;
   --cover-image-tone: none;
   --cover-ink: #19364d;
-  --cover-glass: #91a9b6;
   --cover-beam: 255 226 172;
   --cover-beam-strength: 0;
   --cover-language-accent: #644819;
@@ -28,7 +27,6 @@ html[data-theme="dark"] .cover {
   --cover-image-tone: saturate(.83);
   --cover-ink: #dee9f4;
   --cover-lit-ink: #fff6d7;
-  --cover-glass: #526675;
   --cover-beam: 255 201 130;
   --cover-beam-strength: .41;
   --cover-language-accent: var(--cover-lit-ink);
@@ -36,10 +34,40 @@ html[data-theme="dark"] .cover {
 }
 
 /* About enters over the part of the cover already faded to the page color. */
-.cover + .page {
+.coastal-page {
+  --coast-wash-art: url("assets/headland-daylight.webp");
+  --coast-wash-tint: #91b5cc;
+  --coast-wash-opacity: .24;
   position: relative;
   z-index: 1;
   margin-block-start: calc(-1 * var(--cover-overlap));
+}
+
+html[data-theme="dark"] .coastal-page {
+  --coast-wash-art: url("assets/headland-dusk.webp");
+  --coast-wash-tint: #355d78;
+  --coast-wash-opacity: .32;
+}
+
+.coast-wash {
+  position: sticky;
+  top: 0;
+  z-index: -1;
+  height: 100svh;
+  margin-block-end: -100svh;
+  pointer-events: none;
+  background: linear-gradient(
+    148deg, transparent 36%, color-mix(in srgb, var(--coast-wash-tint) 16%, transparent)
+  );
+}
+
+.coast-wash::before {
+  position: absolute;
+  inset: 14% 0 0;
+  background: var(--coast-wash-art) right bottom / auto 176% no-repeat;
+  opacity: var(--coast-wash-opacity);
+  mask-image: radial-gradient(ellipse 82% 92% at 100% 90%, #000 5%, rgb(0 0 0 / .58) 40%, transparent 100%);
+  content: "";
 }
 
 .cover-frame {
@@ -86,54 +114,13 @@ html[data-theme="dark"] .cover {
   content: "";
 }
 
-.cover-beacon {
-  --beacon-width: clamp(36px, 3.6vw, 62px);
-  position: absolute;
-  left: 87.8%;
-  top: 29.4%;
-  width: var(--beacon-width);
-  height: calc(var(--beacon-width) * 2.06);
-  color: #243f61;
-  transform: translate(-50%, -100%);
-}
-
-.cover-beacon::before {
-  position: absolute;
-  inset: 36% 4% 0;
-  background:
-    repeating-linear-gradient(0deg, transparent 0 5px, #28466855 5px 6px),
-    linear-gradient(90deg, #55708c, #e3e3d4 35%, #a9b5bd 75%, #345270);
-  clip-path: polygon(23% 0, 77% 0, 88% 88%, 100% 94%, 100% 100%, 0 100%, 0 94%, 12% 88%);
-  content: "";
-}
-
-.cover-beacon::after {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 25%;
-  background:
-    repeating-linear-gradient(103deg, transparent 0 3px, #9eb4c066 3px 4px),
-    linear-gradient(90deg, #263b58, #70899f, #233951);
-  clip-path: polygon(47% 0, 53% 0, 56% 25%, 87% 70%, 100% 93%, 100% 100%, 0 100%, 0 93%, 13% 70%, 44% 25%);
-  content: "";
-}
-
-.cover-lantern {
-  position: absolute;
-  inset: 23% 12% 56%;
-  border: 2px solid currentColor;
-  border-radius: 2px 2px 4px 4px;
-  box-shadow: 0 3px 0 2px currentColor;
-  background: repeating-linear-gradient(90deg, var(--cover-glass) 0 17%, #344c66 18% 23%);
-}
-
 .cover-lamp {
+  --cover-lamp-size: clamp(4px, .42vw, 7px);
   position: absolute;
-  z-index: 1;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
+  top: 19.9%;
+  left: 87.2%;
+  width: var(--cover-lamp-size);
+  height: var(--cover-lamp-size);
   transform: translate(-50%, -50%);
   opacity: var(--lamp-intensity, 1);
 }
@@ -143,7 +130,7 @@ html[data-theme="dark"] .cover {
   inset: 0;
   border-radius: 50%;
   background: #fffaf0;
-  box-shadow: 0 0 9px 5px #fff4d3, 0 0 29px 15px #fff0bd86;
+  box-shadow: 0 0 7px 3px #fff0bf, 0 0 17px 7px #ffde8b9c, 0 0 27px 12px #ffd1834d;
   opacity: 0;
   content: "";
 }
@@ -330,10 +317,21 @@ html[data-theme="dark"] .cover {
     aspect-ratio: 720 / 660;
   }
   .cover-landscape img { mask-image: linear-gradient(to bottom, transparent, #000 16%); }
-  .cover-beacon {
-    left: 89.5%;
-    top: 29.4%;
-    --beacon-width: 31px;
+  .cover-lamp { left: 88.5%; }
+
+  .coastal-page {
+    --coast-wash-art: url("assets/headland-daylight-mobile.webp");
+    --coast-wash-opacity: .15;
+  }
+
+  html[data-theme="dark"] .coastal-page {
+    --coast-wash-art: url("assets/headland-dusk-mobile.webp");
+    --coast-wash-opacity: .22;
+  }
+
+  .coast-wash::before {
+    background-position: 70% bottom;
+    mask-image: radial-gradient(ellipse 100% 75% at 100% 92%, #000, transparent);
   }
   .cover-beam {
     height: clamp(142px, 48vw, 260px);

@@ -419,7 +419,7 @@ const Rail = ({ active, language, onLanguageChange }) => {
 
 const Cover = ({ language, onLanguageChange, theme }) => {
   const copy = COPY[language];
-  const artwork = theme === "dark" ? "assets/coast-dusk" : "assets/coast-daylight";
+  const artwork = theme === "dark" ? "assets/headland-dusk" : "assets/headland-daylight";
   const [loadedArtwork, setLoadedArtwork] = useState(null);
   const coverRef = useRef(null);
   const frameRef = useRef(null);
@@ -480,8 +480,10 @@ const Cover = ({ language, onLanguageChange, theme }) => {
       const rect = frame.getBoundingClientRect();
       const source = lamp.getBoundingClientRect();
       const heading = title.getBoundingClientRect();
-      const pageStyle = getComputedStyle(cover.nextElementSibling);
-      const bodyTop = rect.height + parseFloat(pageStyle.marginBlockStart) + parseFloat(pageStyle.paddingBlockStart);
+      const readingSurface = cover.nextElementSibling;
+      const overlap = parseFloat(getComputedStyle(readingSurface).marginBlockStart);
+      const padding = parseFloat(getComputedStyle(readingSurface.querySelector("main")).paddingBlockStart);
+      const bodyTop = rect.height + overlap + padding;
       dimensions = {
         x: source.left + source.width / 2 - rect.left,
         y: source.top + source.height / 2 - rect.top,
@@ -546,9 +548,7 @@ const Cover = ({ language, onLanguageChange, theme }) => {
             <img src={`${artwork}.webp`} alt="" width="1672" height="941" fetchPriority="high"
               onLoad={() => setLoadedArtwork(artwork)} />
           </picture>
-          <div className="cover-beacon">
-            <div className="cover-lantern"><div className="cover-lamp" ref={lampRef} /></div>
-          </div>
+          <div className="cover-lamp" ref={lampRef} />
         </div>
         <div className="cover-beam" aria-hidden="true" />
         <div className="cover-language">
@@ -871,24 +871,27 @@ const App = () => {
         />
       </div>
       <Cover language={language} onLanguageChange={setLanguage} theme={theme} />
-      <main className="page">
-        <Rail active={active} language={language} onLanguageChange={setLanguage} />
-        <div className="content">
-          <About language={language} />
-          <Research language={language} showAnim={tweaks.showHeroAnim} />
-          <Publications language={language} />
-          <Projects language={language} />
-          <Experience language={language} />
-          <Education language={language} />
-          <Awards language={language} />
-          <Contact language={language} />
-          <div className="colophon">
-            <span>© 2026 Jiu Chen</span>
-            <span className="colophon-updated">{COPY[language].updated} · {COPY[language].updatedValue}</span>
-            <a href="#top">{COPY[language].backToTop}</a>
+      <div className="coastal-page">
+        <div className="coast-wash" aria-hidden="true" />
+        <main className="page">
+          <Rail active={active} language={language} onLanguageChange={setLanguage} />
+          <div className="content">
+            <About language={language} />
+            <Research language={language} showAnim={tweaks.showHeroAnim} />
+            <Publications language={language} />
+            <Projects language={language} />
+            <Experience language={language} />
+            <Education language={language} />
+            <Awards language={language} />
+            <Contact language={language} />
+            <div className="colophon">
+              <span>© 2026 Jiu Chen</span>
+              <span className="colophon-updated">{COPY[language].updated} · {COPY[language].updatedValue}</span>
+              <a href="#top">{COPY[language].backToTop}</a>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
 
       {TP && (
         <TP title="Tweaks">

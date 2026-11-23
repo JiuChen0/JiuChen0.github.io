@@ -8,7 +8,6 @@
 
 .scroll-scene[data-scroll-enabled] > .scroll-scene__frame {
   position: sticky;
-  background: var(--bg);
 }
 
 .scroll-scene[data-scroll-enabled]::after {
@@ -24,7 +23,6 @@
   z-index: 2;
   top: calc(var(--controls-clearance) - 6px);
   padding-block: 6px 13px;
-  background: var(--bg);
 }
 
 .chapter-sequence[data-sequence-ready] > .chapter-heading .s-title { margin: 0; }
@@ -43,9 +41,9 @@
 
 .chapter-sequence[data-sequence-ready] > .chapter-heading[data-pinned]::before {
   position: absolute;
-  inset: 100% 0 auto;
-  height: 18px;
-  background: linear-gradient(var(--bg), transparent);
+  z-index: -1;
+  inset: calc(-1 * var(--controls-clearance)) 0 -18px;
+  background: linear-gradient(var(--bg) calc(100% - 18px), transparent);
   pointer-events: none;
   content: "";
 }
@@ -78,10 +76,7 @@
 
 @media (max-width: 920px) {
   .chapter-sequence[data-sequence-ready] > .chapter-heading[data-pinned]::before {
-    z-index: -1;
-    inset: calc(-1 * var(--controls-clearance)) calc(-1 * var(--page-gutter)) -18px;
-    height: auto;
-    background: linear-gradient(var(--bg) calc(100% - 18px), transparent);
+    inset-inline: calc(-1 * var(--page-gutter));
   }
 }
 
