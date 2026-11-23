@@ -192,6 +192,33 @@ html[data-theme="dark"] .cover {
   pointer-events: none;
 }
 
+.cover-language .language-switch {
+  --language-segment-width: 60px;
+  --accent: var(--cover-lit-ink);
+  --ink: var(--cover-lit-ink);
+  --ink-soft: var(--cover-ink);
+}
+
+.cover-language .language-switch button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cover-language .language-switch::before {
+  border-color: color-mix(in srgb, var(--cover-ink) 22%, transparent);
+  background: color-mix(in srgb, var(--cover-sky) 75%, transparent);
+  box-shadow: none;
+}
+
+.cover-language .language-switch .language-switch__page {
+  border-color: color-mix(in srgb, var(--cover-lit-ink) 30%, transparent);
+  background: color-mix(in srgb, var(--cover-lit-ink) 13%, var(--cover-sky));
+  box-shadow: inset 0 0 12px rgb(var(--cover-beam) / .10);
+}
+
+.cover-language .language-switch button[aria-pressed="true"] .language-switch__glyph {
+  text-shadow: 0 0 8px rgb(var(--cover-beam) / .32);
+}
+
 .cover-copy {
   position: relative;
   padding-block: 94px;
