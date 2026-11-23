@@ -308,11 +308,10 @@ const useActiveSection = (ids) => {
   const [active, setActive] = useState(ids[0]);
   useEffect(() => {
     const onScroll = () => {
-      const y = window.scrollY + 140;
       let cur = ids[0];
       for (const id of ids) {
         const el = document.getElementById(id);
-        if (el && el.offsetTop <= y) cur = id;
+        if (el && el.getBoundingClientRect().top <= 140) cur = id;
       }
       setActive(cur);
     };
@@ -435,41 +434,70 @@ const Cover = ({ language, onLanguageChange }) => {
     let raf = 0;
     let progress = 0;
     let lastTime = 0;
+    let copyLift = 0;
+    let lastVisual;
+
+    const easeBetween = (start, end, value) => {
+      const t = Math.max(0, Math.min(1, (value - start) / (end - start)));
+      return t * t * (3 - 2 * t);
+    };
 
     const targetProgress = () => {
       const { runway } = dimensions;
       return motion.matches || !runway ? 0 : Math.min(1, Math.max(0, window.scrollY / runway));
     };
 
-    const paint = () => {
-      const { x, y, titleX, titleY, height, coverHeight } = dimensions;
-      const sweep = progress * Math.min(144, height * .16);
-      const angle = Math.atan2(titleY + sweep - y, titleX - x);
-      frame.style.setProperty("--cover-progress", progress.toFixed(4));
+    const paint = (scrollProgress) => {
+      const { x, y, titleX, titleY, width, centerY, coverHeight, mistEnd } = dimensions;
+      // Keep the fade close to the actual edge even on a large wheel step.
+      const visual = Math.max(progress, scrollProgress - .07);
+      document.documentElement.style.setProperty("--cover-chrome-opacity",
+        1 - easeBetween(0, 110, coverHeight - window.scrollY));
+      if (visual === lastVisual) return;
+      lastVisual = visual;
+      const sweep = easeBetween(0, .66, visual);
+      const aimX = titleX + (width * .5 - titleX) * sweep;
+      const aimY = titleY + (centerY - titleY) * sweep;
+      const angle = Math.atan2(aimY - y, aimX - x);
+      const mist = easeBetween(.21, 1, visual);
+      copyLift = 24 * easeBetween(.12, .85, visual);
+
+      frame.style.setProperty("--cover-progress", visual.toFixed(4));
       frame.style.setProperty("--beam-angle", `${angle}rad`);
-      frame.style.setProperty("--cover-highlight", `${55 + progress * 155}%`);
-      document.documentElement.toggleAttribute("data-cover-visible", window.scrollY < coverHeight - 88);
+      frame.style.setProperty("--beam-width", 1 - .42 * easeBetween(.2, .96, visual));
+      frame.style.setProperty("--beam-intensity", 1 - easeBetween(.31, 1, visual));
+      frame.style.setProperty("--lamp-intensity", 1 - easeBetween(.45, 1, visual));
+      frame.style.setProperty("--cover-highlight", `${55 + sweep * 120}%`);
+      frame.style.setProperty("--cover-copy-opacity", 1 - easeBetween(.19, .79, visual));
+      frame.style.setProperty("--cover-copy-lift", `${-copyLift}px`);
+      frame.style.setProperty("--cover-mist-start", `${89 - mist * 66}%`);
+      frame.style.setProperty("--cover-mist-end", `${99.4 + mist * (mistEnd - 99.4)}%`);
     };
 
     const measure = () => {
       const rect = frame.getBoundingClientRect();
       const source = lamp.getBoundingClientRect();
       const heading = title.getBoundingClientRect();
+      const pageStyle = getComputedStyle(cover.nextElementSibling);
+      const bodyTop = rect.height + parseFloat(pageStyle.marginBlockStart) + parseFloat(pageStyle.paddingBlockStart);
       dimensions = {
         x: source.left + source.width / 2 - rect.left,
         y: source.top + source.height / 2 - rect.top,
         titleX: heading.left + heading.width * .64 - rect.left,
-        titleY: heading.top + heading.height * .56 - rect.top + progress * 22,
+        titleY: heading.top + heading.height * .56 - rect.top + copyLift,
         width: rect.width,
         height: rect.height,
+        centerY: Math.min(rect.height, window.innerHeight) / 2,
         coverHeight: cover.offsetHeight,
+        mistEnd: Math.max(50, Math.min(84, 100 * bodyTop / rect.height - 2.5)),
         runway: Math.max(0, cover.offsetHeight - frame.offsetHeight),
       };
       frame.style.setProperty("--beam-x", `${dimensions.x}px`);
       frame.style.setProperty("--beam-y", `${dimensions.y}px`);
       frame.style.setProperty("--beam-length", `${Math.max(dimensions.width * 1.22, dimensions.height * .8)}px`);
       progress = targetProgress();
-      paint();
+      lastVisual = undefined;
+      paint(progress);
     };
 
     const tick = (now) => {
@@ -477,9 +505,9 @@ const Cover = ({ language, onLanguageChange }) => {
       const target = targetProgress();
       const elapsed = lastTime ? now - lastTime : 16;
       lastTime = now;
-      progress += (target - progress) * (1 - Math.exp(-elapsed / 52));
-      if (Math.abs(target - progress) < .001 || motion.matches) progress = target;
-      paint();
+      progress += (target - progress) * (1 - Math.exp(-elapsed / 46));
+      if (target === 1 || Math.abs(target - progress) < .001 || motion.matches) progress = target;
+      paint(target);
       if (progress !== target) raf = requestAnimationFrame(tick);
       else lastTime = 0;
     };
@@ -493,14 +521,16 @@ const Cover = ({ language, onLanguageChange }) => {
     resize.observe(frame);
     resize.observe(title);
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measure);
     motion.addEventListener("change", measure);
 
     return () => {
       resize.disconnect();
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
       motion.removeEventListener("change", measure);
       cancelAnimationFrame(raf);
-      document.documentElement.removeAttribute("data-cover-visible");
+      document.documentElement.style.removeProperty("--cover-chrome-opacity");
     };
   }, [language]);
 
