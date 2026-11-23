@@ -215,6 +215,7 @@ html[data-theme="dark"] .language-switch__page {
   cursor: pointer;
   pointer-events: auto;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .language-switch button:focus-visible,

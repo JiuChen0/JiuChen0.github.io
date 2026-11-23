@@ -4,12 +4,14 @@
 }
 
 .cover {
-  --cover-sky: #405a73;
-  --cover-image-tone: brightness(1.38) saturate(.73);
-  --cover-ink: #f3f4f8;
-  --cover-lit-ink: #fff1cc;
+  --cover-sky: #cee1ee;
+  --cover-image-tone: none;
+  --cover-ink: #19364d;
+  --cover-glass: #91a9b6;
   --cover-beam: 255 226 172;
-  --cover-beam-strength: .43;
+  --cover-beam-strength: 0;
+  --cover-language-accent: #644819;
+  --cover-language-fill: color-mix(in srgb, #f6e8cb 64%, var(--cover-sky));
   position: relative;
   background: var(--bg);
 }
@@ -26,8 +28,11 @@ html[data-theme="dark"] .cover {
   --cover-image-tone: brightness(.53) saturate(.70);
   --cover-ink: #dee9f4;
   --cover-lit-ink: #fff6d7;
+  --cover-glass: #526675;
   --cover-beam: 255 201 130;
   --cover-beam-strength: .41;
+  --cover-language-accent: var(--cover-lit-ink);
+  --cover-language-fill: color-mix(in srgb, var(--cover-lit-ink) 13%, var(--cover-sky));
 }
 
 /* About enters over the part of the cover already faded to the page color. */
@@ -119,8 +124,7 @@ html[data-theme="dark"] .cover {
   border: 2px solid currentColor;
   border-radius: 2px 2px 4px 4px;
   box-shadow: 0 3px 0 2px currentColor;
-  --lantern-glass: color-mix(in srgb, #5e7484, #ced1c3 calc(var(--lamp-intensity, 1) * 100%));
-  background: repeating-linear-gradient(90deg, var(--lantern-glass) 0 17%, #344c66 18% 23%);
+  background: repeating-linear-gradient(90deg, var(--cover-glass) 0 17%, #344c66 18% 23%);
 }
 
 .cover-lamp {
@@ -131,10 +135,17 @@ html[data-theme="dark"] .cover {
   width: 8px;
   height: 8px;
   transform: translate(-50%, -50%);
+  opacity: var(--lamp-intensity, 1);
+}
+
+.cover-lamp::before {
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
   background: #fffaf0;
-  opacity: var(--lamp-intensity, 1);
   box-shadow: 0 0 9px 5px #fff4d3, 0 0 29px 15px #fff0bd86;
+  opacity: 0;
+  content: "";
 }
 
 .cover-beam {
@@ -160,7 +171,27 @@ html[data-theme="dark"] .cover {
     linear-gradient(0deg, transparent 10%, rgb(var(--cover-beam) / .44) 50%, transparent 90%);
   clip-path: polygon(0 49%, 100% 0, 100% 100%, 0 51%);
   mask-image: linear-gradient(0deg, transparent 4%, #000 35% 65%, transparent 96%);
+  opacity: 0;
+  transform-origin: left center;
   content: "";
+}
+
+.cover[data-lantern-ready] .cover-lamp::before {
+  animation: cover-ignite-lamp 390ms ease-out both;
+}
+
+.cover[data-lantern-ready] .cover-beam::before {
+  animation: cover-ignite-beam 560ms var(--ease-out) 140ms both;
+}
+
+@keyframes cover-ignite-lamp {
+  from { opacity: 0; transform: scale(.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes cover-ignite-beam {
+  from { opacity: 0; transform: scaleX(.08); }
+  to { opacity: 1; transform: scaleX(1); }
 }
 
 .cover-frame::after {
@@ -194,8 +225,8 @@ html[data-theme="dark"] .cover {
 
 .cover-language .language-switch {
   --language-segment-width: 60px;
-  --accent: var(--cover-lit-ink);
-  --ink: var(--cover-lit-ink);
+  --accent: var(--cover-language-accent);
+  --ink: var(--cover-language-accent);
   --ink-soft: var(--cover-ink);
 }
 
@@ -210,8 +241,8 @@ html[data-theme="dark"] .cover {
 }
 
 .cover-language .language-switch .language-switch__page {
-  border-color: color-mix(in srgb, var(--cover-lit-ink) 30%, transparent);
-  background: color-mix(in srgb, var(--cover-lit-ink) 13%, var(--cover-sky));
+  border-color: color-mix(in srgb, var(--cover-language-accent) 30%, transparent);
+  background: var(--cover-language-fill);
   box-shadow: inset 0 0 12px rgb(var(--cover-beam) / .10);
 }
 
@@ -243,7 +274,7 @@ html[data-theme="dark"] .cover {
 }
 
 @supports (background-clip: text) {
-  .cover-copy h1 {
+  html[data-theme="dark"] .cover-copy h1 {
     background: radial-gradient(ellipse at 65% var(--cover-highlight, 55%), var(--cover-lit-ink) 15%, var(--cover-ink) 77%);
     background-clip: text;
     color: transparent;
@@ -315,6 +346,11 @@ html[data-theme="dark"] .cover {
   #root { --cover-runway: 0px; }
   .cover-frame { position: relative; }
   .cover-link span { transition: none; }
+  .cover[data-lantern-ready] .cover-lamp::before,
+  .cover[data-lantern-ready] .cover-beam::before {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 @media (forced-colors: active) {

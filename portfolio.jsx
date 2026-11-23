@@ -417,8 +417,10 @@ const Rail = ({ active, language, onLanguageChange }) => {
 
 // ---------- sections ----------
 
-const Cover = ({ language, onLanguageChange }) => {
+const Cover = ({ language, onLanguageChange, theme }) => {
   const copy = COPY[language];
+  const artwork = theme === "dark" ? "assets/confluence-dusk" : "assets/confluence-daylight";
+  const [loadedArtwork, setLoadedArtwork] = useState(null);
   const coverRef = useRef(null);
   const frameRef = useRef(null);
   const lampRef = useRef(null);
@@ -535,12 +537,14 @@ const Cover = ({ language, onLanguageChange }) => {
   }, [language]);
 
   return (
-    <header className="cover" id="top" ref={coverRef}>
+    <header className="cover" id="top" ref={coverRef}
+      data-lantern-ready={theme === "dark" && loadedArtwork === artwork ? "" : undefined}>
       <div className="cover-frame" ref={frameRef}>
         <div className="cover-landscape" aria-hidden="true">
-          <picture>
-            <source media="(width <= 760px)" srcSet="assets/confluence-dusk-mobile.webp" />
-            <img src="assets/confluence-dusk.webp" alt="" width="1672" height="941" fetchPriority="high" />
+          <picture key={artwork}>
+            <source media="(width <= 760px)" srcSet={`${artwork}-mobile.webp`} />
+            <img src={`${artwork}.webp`} alt="" width="1672" height="941" fetchPriority="high"
+              onLoad={() => setLoadedArtwork(artwork)} />
           </picture>
           <div className="cover-beacon">
             <div className="cover-lantern"><div className="cover-lamp" ref={lampRef} /></div>
@@ -866,7 +870,7 @@ const App = () => {
           onToggle={() => changeTheme(theme === "dark" ? "light" : "dark")}
         />
       </div>
-      <Cover language={language} onLanguageChange={setLanguage} />
+      <Cover language={language} onLanguageChange={setLanguage} theme={theme} />
       <main className="page">
         <Rail active={active} language={language} onLanguageChange={setLanguage} />
         <div className="content">
